@@ -2,10 +2,12 @@
 
 //Buttons
 const int N_BUTTONS = 1;
-byte buttonPin[N_BUTTONS] = { 6 };
+byte buttonPin[N_BUTTONS] = {6};
 int buttonCC[N_BUTTONS] = {130};
 int buttonState[N_BUTTONS] = {HIGH};
 int buttonPState[N_BUTTONS] = {HIGH}; //previous
+int buttonDataState[N_BUTTONS] = {255}; //value to send
+
 
 //Debounce buttons
 unsigned long lastDebounceTime[N_BUTTONS] = {0};
@@ -20,8 +22,8 @@ int potCC[N_POTS] = {23, 17};
 int potReading[N_POTS] = {0};
 int potState[N_POTS] = {0};
 int potPState[N_POTS] = {0}; //previous
-int dataState[N_POTS] = {0};
-int dataPState[N_POTS] = {0}; //previous
+int potDataState[N_POTS] = {0};
+int potDataPState[N_POTS] = {0}; //previous
 
 //Smoothing pot
 byte potThreshold = 20; 
@@ -58,9 +60,9 @@ void setup ()
 
   Serial.begin (31250, SERIAL_8N1, true); // 9 bit mode
   delay(2500);
-  Serial.write9bit(to9Bits(128, 1)); // send initial 128 ping + 0 value
+  Serial.write9bit(to9Bits(128, 1));
   delay(20);
-  Serial.write9bit(to9Bits(0, 0)); // send initial 128 ping + 0 value
+  Serial.write9bit(to9Bits(0, 0));
 
 }  // end of setup
 
@@ -72,12 +74,43 @@ void loop ()
 {
   momentaryButtons();
 
+  //manualButton();
+  //writeButton();
+
   potentiometers();
 }  // end of loop
 
 
 /* =================================================== */
 
+void writeButton(int i) {
+  buttonState[i] = digitalRead(buttonPin[i]);
+  debounceTimer[i] = millis() - lastDebounceTime[i];
+
+  if (buttonState[i] != buttonPState[i]) {
+
+    lastDebounceTime[i] = millis();
+    
+    if (debounceTimer[i] > debounceDelay) {
+      if (buttonState[i] == HIGH) {
+        digitalWrite(8, HIGH);
+        delay(20);
+        Serial.write9bit(to9Bits(buttonCC[i], 1));
+        delay(20);
+        Serial.write9bit(to9Bits(buttonDataState[i], 0));
+        
+        if (buttonCC[i] == 130) {
+          delay(20);
+          Serial.write9bit(to9Bits(0, 0));
+        }
+      } else {
+        digitalWrite(8, LOW);
+      }
+      buttonPState[i] = buttonState[i];
+    }
+
+  }
+}
 
 void momentaryButtons() {
   for (int i = 0; i < N_BUTTONS; i++) {
@@ -92,12 +125,13 @@ void momentaryButtons() {
         if (buttonState[i] == HIGH) {
           digitalWrite(8, HIGH);
           delay(20);
-          Serial.write9bit(to9Bits(buttonCC[i], 1)); // send initial 128 ping + 0 value
+          Serial.write9bit(to9Bits(buttonCC[i], 1));
           delay(20);
-          Serial.write9bit(to9Bits(255, 0)); // send initial 128 ping + 0 value
-          if ( buttonCC[i] == 130) {
+          Serial.write9bit(to9Bits(buttonDataState[i], 0));
+          
+          if (buttonCC[i] == 130) {
             delay(20);
-            Serial.write9bit(to9Bits(0, 0)); // send initial 128 ping + 0 value
+            Serial.write9bit(to9Bits(0, 0));
           }
         } else {
           digitalWrite(8, LOW);
@@ -118,7 +152,7 @@ void potRead(int i) {
 void potentiometers() {
   for (int i = 0; i < N_POTS; i++) {
     potRead(i);
-    dataState[i] = map(potState[i], 0, 1023, 0, 255);
+    potDataState[i] = map(potState[i], 0, 1023, 0, 255);
 
     int potVar = abs(potState[i] - potPState[i]);
 
@@ -129,14 +163,14 @@ void potentiometers() {
     potTimer[i] = millis() - lastPotTime[i];
 
     if (potTimer[i] < POT_TIMEOUT && millis() >= POT_TIMEOUT) {
-      if (dataState[i] != dataPState[i]) {
+      if (potDataState[i] != potDataPState[i]) {
         delay(20);
-        Serial.write9bit(to9Bits(potCC[i], 1)); // send initial 128 ping + 0 value
+        Serial.write9bit(to9Bits(potCC[i], 1));
         delay(20);
-        Serial.write9bit(to9Bits(dataState[i], 0)); // send initial 128 ping + 0 value
+        Serial.write9bit(to9Bits(potDataState[i], 0));
 
 
-        dataPState[i] = dataState[i];
+        potDataPState[i] = potDataState[i];
       }
       potPState[i] = potState[i];
 
