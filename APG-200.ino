@@ -1,13 +1,18 @@
 #include <ResponsiveAnalogRead.h>
 
+int delayBetweenWrites = 20;
+
+//led
+const int N_LEDS = 2;
+int ledPin[N_LEDS] = { 8, 9};
+
 //Buttons
-const int N_BUTTONS = 1;
-byte buttonPin[N_BUTTONS] = {6};
-int buttonCC[N_BUTTONS] = {130};
+const int N_BUTTONS = 2;
+byte buttonPin[N_BUTTONS] = {2, 6};
+int buttonCC[N_BUTTONS] = {129, 130};
 int buttonState[N_BUTTONS] = {HIGH};
 int buttonPState[N_BUTTONS] = {HIGH}; //previous
-int buttonDataState[N_BUTTONS] = {255}; //value to send
-
+int buttonDataState[N_BUTTONS] = {0, 255}; //value to send
 
 //Debounce buttons
 unsigned long lastDebounceTime[N_BUTTONS] = {0};
@@ -26,12 +31,11 @@ int potDataState[N_POTS] = {0};
 int potDataPState[N_POTS] = {0}; //previous
 
 //Smoothing pot
-byte potThreshold = 20; 
-
+byte potThreshold = 20;
 unsigned long lastPotTime[N_POTS] = {0};
 unsigned long potTimer[N_POTS] = {0};
 const int POT_TIMEOUT = 300; //in milliseconds
-
+//ResponsiveAnalogRead.h
 float snapMultiplier = 0.01; // (0.0 - 1.0) - Increase for faster, but less smooth reading
 ResponsiveAnalogRead responsivePot[N_POTS] = {};
 
@@ -43,7 +47,7 @@ void setup ()
 
   //buttons
   for (int i = 0; i < N_BUTTONS; i++) {
-      pinMode(buttonPin[i], INPUT);
+    pinMode(buttonPin[i], INPUT);
   }
 
 
@@ -53,16 +57,18 @@ void setup ()
     responsivePot[i].setAnalogResolution(1023);
   }
 
+  //Set values of pots so we don't enter the loop prematurely on startup
   for (int i = 0; i < N_POTS; i++) {
     potRead(i);
     potPState[i] = potState[i];
   }
 
   Serial.begin (31250, SERIAL_8N1, true); // 9 bit mode
+
+  //Startup ping
   delay(2500);
-  Serial.write9bit(to9Bits(128, 1));
-  delay(20);
-  Serial.write9bit(to9Bits(0, 0));
+  send(128, 1);
+  send(0, 0);
 
 }  // end of setup
 
@@ -72,10 +78,8 @@ void setup ()
 
 void loop ()
 {
-  momentaryButtons();
 
-  //manualButton();
-  //writeButton();
+  momentaryButtons();
 
   potentiometers();
 }  // end of loop
@@ -83,33 +87,23 @@ void loop ()
 
 /* =================================================== */
 
-void writeButton(int i) {
-  buttonState[i] = digitalRead(buttonPin[i]);
-  debounceTimer[i] = millis() - lastDebounceTime[i];
-
-  if (buttonState[i] != buttonPState[i]) {
-
-    lastDebounceTime[i] = millis();
-    
-    if (debounceTimer[i] > debounceDelay) {
-      if (buttonState[i] == HIGH) {
-        digitalWrite(8, HIGH);
-        delay(20);
-        Serial.write9bit(to9Bits(buttonCC[i], 1));
-        delay(20);
-        Serial.write9bit(to9Bits(buttonDataState[i], 0));
-        
-        if (buttonCC[i] == 130) {
-          delay(20);
-          Serial.write9bit(to9Bits(0, 0));
-        }
-      } else {
-        digitalWrite(8, LOW);
-      }
-      buttonPState[i] = buttonState[i];
-    }
-
+void sendAll() {
+  //Pots
+  for (int i = 0; i < N_POTS; i++) {
+    potRead(i);
+    potDataState[i] = map(potState[i], 0, 1023, 0, 255);
+    send(potCC[i], 1);
+    send(potDataState[i], 0);
   }
+
+  //Switches
+
+
+}
+
+void send(int value, int ind) {
+  delay(delayBetweenWrites);
+  Serial.write9bit(to9Bits(value, ind));
 }
 
 void momentaryButtons() {
@@ -120,21 +114,21 @@ void momentaryButtons() {
     if (buttonState[i] != buttonPState[i]) {
 
       lastDebounceTime[i] = millis();
-      
+
       if (debounceTimer[i] > debounceDelay) {
         if (buttonState[i] == HIGH) {
-          digitalWrite(8, HIGH);
-          delay(20);
-          Serial.write9bit(to9Bits(buttonCC[i], 1));
-          delay(20);
-          Serial.write9bit(to9Bits(buttonDataState[i], 0));
-          
+          digitalWrite(ledPin[i], HIGH);
+
+          send(buttonCC[i], 1);
+          send(buttonDataState[i], 0);
+
           if (buttonCC[i] == 130) {
-            delay(20);
-            Serial.write9bit(to9Bits(0, 0));
+            send(0, 0);
+
+            sendAll();
           }
         } else {
-          digitalWrite(8, LOW);
+          digitalWrite(ledPin[i], LOW);
         }
         buttonPState[i] = buttonState[i];
       }
@@ -164,10 +158,8 @@ void potentiometers() {
 
     if (potTimer[i] < POT_TIMEOUT && millis() >= POT_TIMEOUT) {
       if (potDataState[i] != potDataPState[i]) {
-        delay(20);
-        Serial.write9bit(to9Bits(potCC[i], 1));
-        delay(20);
-        Serial.write9bit(to9Bits(potDataState[i], 0));
+        send(potCC[i], 1);
+        send(potDataState[i], 0);
 
 
         potDataPState[i] = potDataState[i];
