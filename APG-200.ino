@@ -2,10 +2,6 @@
 
 int delayBetweenWrites = 20;
 
-//led
-const int N_LEDS = 2;
-int ledPin[N_LEDS] = { 8, 9};
-
 //Buttons
 const int N_BUTTONS = 2;
 byte buttonPin[N_BUTTONS] = {2, 6};
@@ -116,8 +112,7 @@ void momentaryButtons() {
       lastDebounceTime[i] = millis();
 
       if (debounceTimer[i] > debounceDelay) {
-        if (buttonState[i] == HIGH) {
-          digitalWrite(ledPin[i], HIGH);
+        if (buttonState[i] == LOW) {
 
           send(buttonCC[i], 1);
           send(buttonDataState[i], 0);
@@ -127,8 +122,6 @@ void momentaryButtons() {
 
             sendAll();
           }
-        } else {
-          digitalWrite(ledPin[i], LOW);
         }
         buttonPState[i] = buttonState[i];
       }
