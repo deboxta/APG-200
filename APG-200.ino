@@ -1,3 +1,14 @@
+/*############################################
+#
+#  APG-200 
+#  a PG200 emulator
+#
+#  (c) Yannick Côté
+#
+#  Emulate the roland PG-200 protocol
+#
+############################################*/
+
 #include <ResponsiveAnalogRead.h>
 
 //Buttons
