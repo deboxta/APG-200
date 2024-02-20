@@ -11,21 +11,19 @@
 
 #include <ResponsiveAnalogRead.h>
 
+#include "Button.h"
+
+#define BUTTON_1_PIN 2
+#define BUTTON_1_CC 129
+#define BUTTON_1_VALUE 0
+#define BUTTON_2_PIN 6
+#define BUTTON_2_CC 130
+#define BUTTON_2_VALUE 255
+
+Button writeBtn(BUTTON_1_PIN, BUTTON_1_CC, BUTTON_1_VALUE);
+Button manualBtn(BUTTON_2_PIN, BUTTON_2_CC, BUTTON_2_VALUE);
+
 int delayBetweenWrites = 20;
-
-//Buttons
-const int N_BUTTONS = 2;
-byte buttonPin[N_BUTTONS] = {2, 6};
-int buttonCC[N_BUTTONS] = {129, 130};
-int buttonState[N_BUTTONS] = {HIGH};
-int buttonPState[N_BUTTONS] = {HIGH}; //previous
-int buttonDataState[N_BUTTONS] = {0, 255}; //value to send
-
-//Debounce buttons
-unsigned long lastDebounceTime[N_BUTTONS] = {0};
-unsigned long debounceTimer[N_BUTTONS] = {0};
-int debounceDelay = 4;
-
 
 //Potentiometers
 const int N_POTS = 2;
@@ -50,14 +48,6 @@ ResponsiveAnalogRead responsivePot[N_POTS] = {};
 
 void setup ()
 {
-  pinMode(8, OUTPUT);
-
-  //buttons
-  for (int i = 0; i < N_BUTTONS; i++) {
-    pinMode(buttonPin[i], INPUT);
-  }
-
-
   //ResponsiveAnalogRead (for pots smooting)
   for (int i = 0; i < N_POTS; i++) {
     responsivePot[i] = ResponsiveAnalogRead(0, true, snapMultiplier);
@@ -85,8 +75,18 @@ void setup ()
 
 void loop ()
 {
+  if (writeBtn.isPressed()) {
+    send(writeBtn.getCC(), 1);
+    send(writeBtn.getValue(), 0);
+  }
 
-  momentaryButtons();
+  if (manualBtn.isPressed()) {
+    send(manualBtn.getCC(), 1);
+    send(manualBtn.getValue(), 0);
+    send(0,0);
+    sendAll();
+  }
+
 
   potentiometers();
 }  // end of loop
@@ -113,34 +113,6 @@ void send(int value, int ind) {
   Serial.write9bit(to9Bits(value, ind));
 }
 
-void momentaryButtons() {
-  for (int i = 0; i < N_BUTTONS; i++) {
-    buttonState[i] = digitalRead(buttonPin[i]);
-    debounceTimer[i] = millis() - lastDebounceTime[i];
-
-    if (buttonState[i] != buttonPState[i]) {
-
-      lastDebounceTime[i] = millis();
-
-      if (debounceTimer[i] > debounceDelay) {
-        if (buttonState[i] == LOW) {
-
-          send(buttonCC[i], 1);
-          send(buttonDataState[i], 0);
-
-          if (buttonCC[i] == 130) {
-            send(0, 0);
-
-            sendAll();
-          }
-        }
-        buttonPState[i] = buttonState[i];
-      }
-
-    }
-
-  }
-}
 void potRead(int i) {
   potReading[i] = analogRead(potPin[i]);
   responsivePot[i].update(potReading[i]);
