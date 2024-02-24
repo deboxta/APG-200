@@ -9,13 +9,15 @@
 #
 ############################################*/
 
-#include <ResponsiveAnalogRead.h>
-
 #include "Button.h"
+#include "Potentiometer.h"
 
-#define BUTTON_1_PIN 2
+
+//Buttons
+#define BUTTON_1_PIN 3
 #define BUTTON_1_CC 129
 #define BUTTON_1_VALUE 0
+
 #define BUTTON_2_PIN 6
 #define BUTTON_2_CC 130
 #define BUTTON_2_VALUE 255
@@ -23,43 +25,38 @@
 Button writeBtn(BUTTON_1_PIN, BUTTON_1_CC, BUTTON_1_VALUE);
 Button manualBtn(BUTTON_2_PIN, BUTTON_2_CC, BUTTON_2_VALUE);
 
-int delayBetweenWrites = 20;
 
 //Potentiometers
-const int N_POTS = 2;
-byte potPin[N_POTS] = {A0, A1};
-int potCC[N_POTS] = {23, 17};
-int potReading[N_POTS] = {0};
-int potState[N_POTS] = {0};
-int potPState[N_POTS] = {0}; //previous
-int potDataState[N_POTS] = {0};
-int potDataPState[N_POTS] = {0}; //previous
+#define POT_1_PIN A0
+#define POT_1_CC 23
 
-//Smoothing pot
-byte potThreshold = 20;
-unsigned long lastPotTime[N_POTS] = {0};
-unsigned long potTimer[N_POTS] = {0};
-const int POT_TIMEOUT = 300; //in milliseconds
-//ResponsiveAnalogRead.h
-float snapMultiplier = 0.01; // (0.0 - 1.0) - Increase for faster, but less smooth reading
-ResponsiveAnalogRead responsivePot[N_POTS] = {};
+#define POT_2_PIN A1
+#define POT_2_CC 17
+
+const int N_POTS = 2;
+
+Pot pots[N_POTS] = {Pot(POT_1_PIN,POT_1_CC),Pot(POT_2_PIN,POT_2_CC)};
+
+
+//Switches
+
+
+//Settings
+int delayBetweenWrites = 20;
+
 
 /* =================================================== */
 
 void setup ()
 {
-  //ResponsiveAnalogRead (for pots smooting)
+  //inits
+  writeBtn.init();
+  manualBtn.init();
   for (int i = 0; i < N_POTS; i++) {
-    responsivePot[i] = ResponsiveAnalogRead(0, true, snapMultiplier);
-    responsivePot[i].setAnalogResolution(1023);
+    pots[i].init();
   }
 
-  //Set values of pots so we don't enter the loop prematurely on startup
-  for (int i = 0; i < N_POTS; i++) {
-    potRead(i);
-    potPState[i] = potState[i];
-  }
-
+  
   Serial.begin (31250, SERIAL_8N1, true); // 9 bit mode
 
   //Startup ping
@@ -87,8 +84,12 @@ void loop ()
     sendAll();
   }
 
-
-  potentiometers();
+  for (int i = 0; i < N_POTS; i++) {
+    if (pots[i].hasChanged()) {
+      send(pots[i].getCC(), 1);
+      send(pots[i].getValue(), 0);  
+    }
+  }
 }  // end of loop
 
 
@@ -97,10 +98,8 @@ void loop ()
 void sendAll() {
   //Pots
   for (int i = 0; i < N_POTS; i++) {
-    potRead(i);
-    potDataState[i] = map(potState[i], 0, 1023, 0, 255);
-    send(potCC[i], 1);
-    send(potDataState[i], 0);
+    send(pots[i].getCC(), 1);
+    send(pots[i].getValue(), 0);
   }
 
   //Switches
@@ -108,42 +107,9 @@ void sendAll() {
 
 }
 
-void send(int value, int ind) {
+void send(byte value, int ind) {
   delay(delayBetweenWrites);
   Serial.write9bit(to9Bits(value, ind));
-}
-
-void potRead(int i) {
-  potReading[i] = analogRead(potPin[i]);
-  responsivePot[i].update(potReading[i]);
-  potState[i] = responsivePot[i].getValue();
-}
-
-void potentiometers() {
-  for (int i = 0; i < N_POTS; i++) {
-    potRead(i);
-    potDataState[i] = map(potState[i], 0, 1023, 0, 255);
-
-    int potVar = abs(potState[i] - potPState[i]);
-
-    if (potVar > potThreshold) {
-      lastPotTime[i] = millis(); //reset
-    }
-
-    potTimer[i] = millis() - lastPotTime[i];
-
-    if (potTimer[i] < POT_TIMEOUT && millis() >= POT_TIMEOUT) {
-      if (potDataState[i] != potDataPState[i]) {
-        send(potCC[i], 1);
-        send(potDataState[i], 0);
-
-
-        potDataPState[i] = potDataState[i];
-      }
-      potPState[i] = potState[i];
-
-    }
-  }
 }
 
 int to9Bits(int address, int value)

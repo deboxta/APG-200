@@ -4,16 +4,17 @@ Button::Button(byte pin, byte CC, byte value) {
   this->pin = pin;
   this->CC = CC;
   this->value = value;
-  lastState = HIGH;
-  init();
 }
 
 void Button::init() {
   pinMode(pin, INPUT);
+  state = HIGH;
+  lastState = HIGH;
   update();
 }
 
 void Button::update() {
+  state = HIGH;
   byte newState = digitalRead(pin);
   debounceTimer = millis() - lastDebounceTime;
 
@@ -27,8 +28,6 @@ void Button::update() {
       }
       lastState = newState;
     }
-  } else {
-    state = HIGH;
   }
   
 }
