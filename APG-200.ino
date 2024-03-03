@@ -11,6 +11,8 @@
 
 #include "Button.h"
 #include "Potentiometer.h"
+#include "Switch.h"
+#include "Group.h"
 
 
 //Buttons
@@ -35,17 +37,26 @@ Button manualBtn(BUTTON_2_PIN, BUTTON_2_CC, BUTTON_2_VALUE);
 
 const int N_POTS = 2;
 
-Pot pots[N_POTS] = {Pot(POT_1_PIN,POT_1_CC),Pot(POT_2_PIN,POT_2_CC)};
+Pot pots[N_POTS] = {
+  Pot(POT_1_PIN,POT_1_CC),
+  Pot(POT_2_PIN,POT_2_CC)
+};
 
 
 //Switches
+#define SWITCH_1_PIN
+#define SWITCH_1_GROUPCC 0
 
+Switch switches[N_SWITCHES] = {
+  Switch({2}, SWITCH_1_GROUPCC, 1),
+  Switch({3})
+}
 
 //Settings
 int delayBetweenWrites = 20;
 
 
-/* =================================================== */
+/* ================================================================================================ */
 
 void setup ()
 {
@@ -115,7 +126,7 @@ void send(byte value, int ind) {
 int to9Bits(int address, int value)
 {
   if (value == 1) {
-    address += 256;
+    address += 0b100000000; //256;
   }
   return address;
 }
