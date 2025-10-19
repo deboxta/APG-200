@@ -45,12 +45,16 @@ Button manualBtn(BUTTON_2_PIN, BUTTON_2_CC, BUTTON_2_VALUE);
 #define POT_3_PIN A0
 #define POT_3_CC 22
 
-const int N_POTS = 3;
+#define POT_4_PIN A6
+#define POT_4_CC 28
+
+const int N_POTS = 4;
 
 Pot pots[N_POTS] = {
   Pot(mux_analog, POT_1_PIN,POT_1_CC),  //pin of mux
   Pot(mux_analog, POT_2_PIN,POT_2_CC),  //pin of mux
-  Pot(mux_analog, POT_3_PIN,POT_3_CC, false) //pin of arduino
+  Pot(mux_analog, POT_3_PIN,POT_3_CC, false), //pin of arduino
+  Pot(mux_analog, POT_4_PIN,POT_4_CC, false), //pin of arduino
 };
 
 
