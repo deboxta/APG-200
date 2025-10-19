@@ -1,20 +1,34 @@
 #include "Potentiometer.h"
 
-Pot::Pot(byte pin, byte CC) {
+Pot::Pot(Mux &mux, byte pin, byte CC, bool isMuxPinned): mux(mux) {
+  this->isMuxPinned = isMuxPinned;
+  this->pin = pin;
+  this->CC = CC;
+}
+
+Pot::Pot(Mux &mux, byte pin, byte CC): mux(mux) {
   this->pin = pin;
   this->CC = CC;
 }
 
 void Pot::init() {
   //ResponsiveAnalogRead (for pots smooting)
-  responsivePot = ResponsiveAnalogRead(pin, true, snapMultiplier);
+  responsivePot = ResponsiveAnalogRead(getPin(), true, snapMultiplier);
   responsivePot.setAnalogResolution(1023);
 
   //Set values of pots so we don't enter the loop prematurely on startup
   read();
   lastState = state;
   lastValue = value;
-  update();
+//  update();
+}
+
+byte Pot::getPin() {
+  if (isMuxPinned) {
+    return mux.getPrimaryPin();
+  } else {
+    return pin;
+  }
 }
 
 void Pot::update() {
@@ -40,7 +54,11 @@ void Pot::update() {
 
 
 void Pot::read() {
-  reading = analogRead(pin);
+  if (isMuxPinned) {
+    mux.channel(pin);
+  }
+
+  reading = analogRead(getPin());
   responsivePot.update(reading);
   state = responsivePot.getValue();
   value = map(state, 0, 1023, 0, 256);
@@ -58,4 +76,3 @@ bool Pot::hasChanged() {
   update();
   return isChanged;
 }
-

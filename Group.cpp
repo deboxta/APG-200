@@ -1,17 +1,20 @@
 #include "Group.h"
 
-Group::Group(byte groupCC, Switch switches[]) {
-  this->pins = pins;
+Group::Group(byte groupCC) {
   this->groupCC = groupCC;
-  this->pos = pos;
 }
 
-Group::init() {
+void Group::init() {
   
 }
 
-Group::update() {
-  byte newState = digitalRead(pin);
+void Group::addSwitch(Switch sw) {
+  //switches[index] = sw;
+  index++;
+}
+
+void Group::update() {
+  //byte newState = digitalRead(pin);
 }
 
 byte Group::getGroupCC() {

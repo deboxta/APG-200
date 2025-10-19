@@ -13,44 +13,63 @@
 #include "Potentiometer.h"
 #include "Switch.h"
 #include "Group.h"
+#include "Mux.h"
 
+//MUX
+#define MUX1_PIN A2
+Mux mux_analog(MUX1_PIN,A1,A5,A4,A3);
+#define MUX2_PIN 7
+Mux mux_digital(MUX2_PIN,3,4,5,6);
 
 //Buttons
-#define BUTTON_1_PIN 3
+#define BUTTON_1_PIN 12
 #define BUTTON_1_CC 129
 #define BUTTON_1_VALUE 0
 
-#define BUTTON_2_PIN 6
+#define BUTTON_2_PIN 11
 #define BUTTON_2_CC 130
 #define BUTTON_2_VALUE 255
 
 Button writeBtn(BUTTON_1_PIN, BUTTON_1_CC, BUTTON_1_VALUE);
 Button manualBtn(BUTTON_2_PIN, BUTTON_2_CC, BUTTON_2_VALUE);
 
+#define BAUD 31250 // 57600  //31250 for pg-200
 
 //Potentiometers
-#define POT_1_PIN A0
+#define POT_1_PIN 1
 #define POT_1_CC 23
 
-#define POT_2_PIN A1
+#define POT_2_PIN 0
 #define POT_2_CC 17
 
-const int N_POTS = 2;
+#define POT_3_PIN A0
+#define POT_3_CC 22
+
+const int N_POTS = 3;
 
 Pot pots[N_POTS] = {
-  Pot(POT_1_PIN,POT_1_CC),
-  Pot(POT_2_PIN,POT_2_CC)
+  Pot(mux_analog, POT_1_PIN,POT_1_CC),  //pin of mux
+  Pot(mux_analog, POT_2_PIN,POT_2_CC),  //pin of mux
+  Pot(mux_analog, POT_3_PIN,POT_3_CC, false) //pin of arduino
 };
 
 
 //Switches
-#define SWITCH_1_PIN
+#define SWITCH_1_PIN 0
 #define SWITCH_1_GROUPCC 0
 
-Switch switches[N_SWITCHES] = {
-  Switch({2}, SWITCH_1_GROUPCC, 1),
-  Switch({3})
-}
+const int N_SWITCHES = 0;
+
+Group groups[3] = {
+  Group(0),
+  Group(1),
+  Group(2)
+};
+
+//Switch switches[N_SWITCHES] = {
+//  Switch({2}, SWITCH_1_GROUPCC, 1),
+//  Switch({3})
+//}
 
 //Settings
 int delayBetweenWrites = 20;
@@ -60,16 +79,23 @@ int delayBetweenWrites = 20;
 
 void setup ()
 {
+  //MUX
+  pinMode(MUX1_PIN, INPUT);
+  pinMode(MUX2_PIN, INPUT);
+
+  
   //inits
   writeBtn.init();
   manualBtn.init();
   for (int i = 0; i < N_POTS; i++) {
     pots[i].init();
   }
+  //Switch sw = Switch(mux_digital, 0, 1, 0, 1, false);
+  //groups[0].addSwitch(sw);
 
   
-  Serial.begin (31250, SERIAL_8N1, true); // 9 bit mode
-
+  Serial.begin (BAUD, SERIAL_8N1, true); // 9 bit mode
+  
   //Startup ping
   delay(2500);
   send(128, 1);
@@ -172,4 +198,3 @@ int to9Bits(int address, int value)
 //Manual                  130           all address/value bytes (?)
 //Write                   129           0
 //Ping (sent on startup)  128           0
-

@@ -3,6 +3,7 @@
 
 #include <Arduino.h>
 #include <ResponsiveAnalogRead.h>
+#include "Mux.h"
 
 class Pot {
   private:
@@ -15,6 +16,9 @@ class Pot {
     int value = 0; //mapped values of pot (sent)
     int lastValue = 0; //previous
 
+    Mux &mux;
+    bool isMuxPinned = true;
+
     //Smoothing pot
     byte threshold = 20;
     unsigned long lastTime = 0;
@@ -26,8 +30,11 @@ class Pot {
     ResponsiveAnalogRead responsivePot;
     
     bool isChanged = false;
+
+    byte getPin();
   public:
-    Pot(byte pin, byte CC);
+    Pot(Mux &mux, byte pin, byte CC, bool isMuxPinned);
+    Pot(Mux &mux, byte pin, byte CC);
     void init();
     void update();
 
