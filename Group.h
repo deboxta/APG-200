@@ -6,20 +6,22 @@
 
 class Group {
   private:
-    byte groupCC;
+    byte CC;
     byte bitMask;
-    int value;
-    int lastValue;
+    byte value;
+    byte lastValue;
     int index = 0;
-    Switch switches[];
+    Switch* switches[8];
+    bool isChanged = false;
   public:
-    Group(byte groupCC);
+    Group(byte CC);
     void init();
     void update();
-    byte getGroupCC();
-    byte getBitMask();
+    byte getCC();
+    byte getMask();
     byte getValue();
-    void addSwitch(Switch sw);
+    void addSwitch(Switch* sw);
+    bool hasChanged();
 };
 
 #endif

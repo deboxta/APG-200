@@ -1,36 +1,21 @@
 #include "Arduino.h"
 #include "Mux.h"
 
-uint8_t _g_channel_truth_table[16][4] = {
-  // s0, s1, s2, s3     channel
-    {0,  0,  0,  0}, // 0
-    {1,  0,  0,  0}, // 1
-    {0,  1,  0,  0}, // 2
-    {1,  1,  0,  0}, // 3
-    {0,  0,  1,  0}, // 4
-    {1,  0,  1,  0}, // 5
-    {0,  1,  1,  0}, // 6
-    {1,  1,  1,  0}, // 7
-    {0,  0,  0,  1}, // 8
-    {1,  0,  0,  1}, // 9
-    {0,  1,  0,  1}, // 10
-    {1,  1,  0,  1}, // 11
-    {0,  0,  1,  1}, // 12
-    {1,  0,  1,  1}, // 13
-    {0,  1,  1,  1}, // 14
-    {1,  1,  1,  1}  // 15
-};
-
 Mux::Mux(byte primaryPin, uint8_t s0, uint8_t s1, uint8_t s2, uint8_t s3) {
   this->primaryPin = primaryPin;
   _s0 = s0;
   _s1 = s1;
   _s2 = s2;
   _s3 = s3;
-  pinMode(s0, OUTPUT);
-  pinMode(s1, OUTPUT);
-  pinMode(s2, OUTPUT);
-  pinMode(s3, OUTPUT);
+}
+
+void Mux::init() {
+  pinMode(primaryPin, INPUT_PULLUP);
+  
+  pinMode(_s0, OUTPUT);
+  pinMode(_s1, OUTPUT);
+  pinMode(_s2, OUTPUT);
+  pinMode(_s3, OUTPUT);
 }
 
 void Mux::channel(uint8_t channel) {

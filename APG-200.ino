@@ -115,14 +115,13 @@ Pot pots[N_POTS] = {
 
 
 //Switches
-#define SWITCH_1_PIN 0
-#define SWITCH_1_GROUPCC 0
+#define SWITCH_1_PIN 14
+#define SWITCH_1_BITPOS1 3
+#define SWITCH_1_GROUPCC 2
 
-const int N_SWITCHES = 0;
+const int N_GROUPS = 1;
 
-Group groups[3] = {
-  Group(0),
-  Group(1),
+Group groups[N_GROUPS] = {
   Group(2)
 };
 
@@ -139,19 +138,21 @@ int delayBetweenWrites = 20;
 
 void setup ()
 {
-  //MUX
-  pinMode(MUX1_PIN, INPUT);
-  pinMode(MUX2_PIN, INPUT);
-
-  
   //inits
+  mux_analog.init();
+  mux_digital.init();
+  
   writeBtn.init();
   manualBtn.init();
+  
   for (int i = 0; i < N_POTS; i++) {
     pots[i].init();
   }
+  
   //Switch sw = Switch(mux_digital, 0, 1, 0, 1, false);
   //groups[0].addSwitch(sw);
+  groups[0].addSwitch(new Switch(mux_digital, SWITCH_1_PIN, SWITCH_1_BITPOS1, SWITCH_1_GROUPCC, true));
+
 
   
   Serial.begin (BAUD, SERIAL_8N1, true); // 9 bit mode
@@ -187,6 +188,14 @@ void loop ()
       send(pots[i].getValue(), 0);  
     }
   }
+
+  for (int i = 0; i < N_GROUPS; i++) {
+    if (groups[i].hasChanged()) {
+      send(groups[i].getCC(), 1);
+      send(groups[i].getMask(), 0);
+      send(groups[i].getValue(), 0);  
+    }
+  }
 }  // end of loop
 
 
@@ -200,7 +209,11 @@ void sendAll() {
   }
 
   //Switches
-
+  for (int i = 0; i < N_GROUPS; i++) {
+    send(groups[i].getCC(), 1);
+    send(groups[i].getMask(), 0);
+    send(groups[i].getValue(), 0);  
+  }
 
 }
 
