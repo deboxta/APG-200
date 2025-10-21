@@ -60,11 +60,11 @@ void Switch::update() {
 
       // only toggle the LED if the new button state is LOW (button pressed, assuming INPUT_PULLUP)
       if (buttonState == LOW) {
-        value |= (1 << CC);
+        value &= ~(1 << bitPos1);
       }
-      else
+      else if (buttonState == HIGH)
       {
-        value |= (0 << CC);
+        value |= (1 << bitPos1);          
       }
     }
   }

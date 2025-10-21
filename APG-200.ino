@@ -92,37 +92,38 @@ Button manualBtn(BUTTON_2_PIN, BUTTON_2_CC, BUTTON_2_VALUE);
 
 const int N_POTS = 18;
 
-Pot pots[N_POTS] = {
-  Pot(mux_analog, POT_1_PIN,POT_1_CC),  //pin of mux
-  Pot(mux_analog, POT_2_PIN,POT_2_CC),  //pin of mux
-  Pot(mux_analog, POT_3_PIN,POT_3_CC),  //pin of mux
-  Pot(mux_analog, POT_4_PIN,POT_4_CC),  //pin of mux
-  Pot(mux_analog, POT_5_PIN,POT_5_CC),  //pin of mux
-  Pot(mux_analog, POT_6_PIN,POT_6_CC),  //pin of mux
-  Pot(mux_analog, POT_7_PIN,POT_7_CC),  //pin of mux
-  Pot(mux_analog, POT_8_PIN,POT_8_CC),  //pin of mux
-  Pot(mux_analog, POT_9_PIN,POT_9_CC),  //pin of mux
-  Pot(mux_analog, POT_10_PIN,POT_10_CC),  //pin of mux
-  Pot(mux_analog, POT_11_PIN,POT_11_CC),  //pin of mux
-  Pot(mux_analog, POT_12_PIN,POT_12_CC),  //pin of mux
-  Pot(mux_analog, POT_13_PIN,POT_13_CC),  //pin of mux
-  Pot(mux_analog, POT_14_PIN,POT_14_CC),  //pin of mux
-  Pot(mux_analog, POT_15_PIN,POT_15_CC),  //pin of mux
-  Pot(mux_analog, POT_16_PIN,POT_16_CC),  //pin of mux
-  Pot(mux_analog, POT_17_PIN,POT_17_CC, false), //pin of arduino
-  Pot(mux_analog, POT_18_PIN,POT_18_CC, false), //pin of arduino
+Pot* pots[N_POTS] = {
+  new Pot(mux_analog, POT_1_PIN,POT_1_CC),  //pin of mux
+  new Pot(mux_analog, POT_2_PIN,POT_2_CC),  //pin of mux
+  new Pot(mux_analog, POT_3_PIN,POT_3_CC),  //pin of mux
+  new Pot(mux_analog, POT_4_PIN,POT_4_CC),  //pin of mux
+  new Pot(mux_analog, POT_5_PIN,POT_5_CC),  //pin of mux
+  new Pot(mux_analog, POT_6_PIN,POT_6_CC),  //pin of mux
+  new Pot(mux_analog, POT_7_PIN,POT_7_CC),  //pin of mux
+  new Pot(mux_analog, POT_8_PIN,POT_8_CC),  //pin of mux
+  new Pot(mux_analog, POT_9_PIN,POT_9_CC),  //pin of mux
+  new Pot(mux_analog, POT_10_PIN,POT_10_CC),  //pin of mux
+  new Pot(mux_analog, POT_11_PIN,POT_11_CC),  //pin of mux
+  new Pot(mux_analog, POT_12_PIN,POT_12_CC),  //pin of mux
+  new Pot(mux_analog, POT_13_PIN,POT_13_CC),  //pin of mux
+  new Pot(mux_analog, POT_14_PIN,POT_14_CC),  //pin of mux
+  new Pot(mux_analog, POT_15_PIN,POT_15_CC),  //pin of mux
+  new Pot(mux_analog, POT_16_PIN,POT_16_CC),  //pin of mux
+  new Pot(mux_analog, POT_17_PIN,POT_17_CC, false), //pin of arduino
+  new Pot(mux_analog, POT_18_PIN,POT_18_CC, false), //pin of arduino
 };
 
 
 //Switches
-#define SWITCH_1_PIN 14
-#define SWITCH_1_BITPOS1 3
-#define SWITCH_1_GROUPCC 2
+//#define SWITCH_1_PIN 14
+//#define SWITCH_1_BITPOS1 3
+//#define SWITCH_1_GROUPCC 2
 
-const int N_GROUPS = 1;
+const int N_GROUPS = 2;
 
-Group groups[N_GROUPS] = {
-  Group(2)
+Group* groups[N_GROUPS] = {
+  new Group(1,6),
+  new Group(2, 2)
 };
 
 //Switch switches[N_SWITCHES] = {
@@ -146,14 +147,21 @@ void setup ()
   manualBtn.init();
   
   for (int i = 0; i < N_POTS; i++) {
-    pots[i].init();
+    pots[i]->init();
   }
   
-  //Switch sw = Switch(mux_digital, 0, 1, 0, 1, false);
-  //groups[0].addSwitch(sw);
-  groups[0].addSwitch(new Switch(mux_digital, SWITCH_1_PIN, SWITCH_1_BITPOS1, SWITCH_1_GROUPCC, true));
+  groups[0]->addSwitch(new Switch(mux_digital, 13, 2, 1, true));
+  groups[0]->addSwitch(new Switch(mux_digital, 15, 3, 1, true));
+  groups[0]->addSwitch(new Switch(mux_digital, 12, 4, 1, true));
+  groups[0]->addSwitch(new Switch(mux_digital, 11, 5, 1, true));
+  groups[0]->addSwitch(new Switch(mux_digital, 9, 6, 1, true));
+  groups[0]->addSwitch(new Switch(mux_digital, 8, 7, 1, true));
 
+  groups[1]->addSwitch(new Switch(mux_digital, 14, 3, 2, true));
+  groups[1]->addSwitch(new Switch(mux_digital, 10, 2, 2, true));
 
+  groups[0]->init();
+  groups[1]->init();
   
   Serial.begin (BAUD, SERIAL_8N1, true); // 9 bit mode
   
@@ -183,17 +191,17 @@ void loop ()
   }
 
   for (int i = 0; i < N_POTS; i++) {
-    if (pots[i].hasChanged()) {
-      send(pots[i].getCC(), 1);
-      send(pots[i].getValue(), 0);  
+    if (pots[i]->hasChanged()) {
+      send(pots[i]->getCC(), 1);
+      send(pots[i]->getValue(), 0);  
     }
   }
 
   for (int i = 0; i < N_GROUPS; i++) {
-    if (groups[i].hasChanged()) {
-      send(groups[i].getCC(), 1);
-      send(groups[i].getMask(), 0);
-      send(groups[i].getValue(), 0);  
+    if (groups[i]->hasChanged()) {
+      send(groups[i]->getCC(), 1);
+      send(groups[i]->getMask(), 0);
+      send(groups[i]->getValue(), 0);  
     }
   }
 }  // end of loop
@@ -204,15 +212,15 @@ void loop ()
 void sendAll() {
   //Pots
   for (int i = 0; i < N_POTS; i++) {
-    send(pots[i].getCC(), 1);
-    send(pots[i].getValue(), 0);
+    send(pots[i]->getCC(), 1);
+    send(pots[i]->getValue(), 0);
   }
 
   //Switches
   for (int i = 0; i < N_GROUPS; i++) {
-    send(groups[i].getCC(), 1);
-    send(groups[i].getMask(), 0);
-    send(groups[i].getValue(), 0);  
+    send(groups[i]->getCC(), 1);
+    send(groups[i]->getMask(), 0);
+    send(groups[i]->getValue(), 0);  
   }
 
 }

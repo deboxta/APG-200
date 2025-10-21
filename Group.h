@@ -11,10 +11,11 @@ class Group {
     byte value;
     byte lastValue;
     int index = 0;
-    Switch* switches[8];
+    Switch* switches[10];
     bool isChanged = false;
+    int nbInGroup;
   public:
-    Group(byte CC);
+    Group(byte CC, int nbInGroup);
     void init();
     void update();
     byte getCC();
