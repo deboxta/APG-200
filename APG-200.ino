@@ -36,25 +36,81 @@ Button manualBtn(BUTTON_2_PIN, BUTTON_2_CC, BUTTON_2_VALUE);
 #define BAUD 31250 // 57600  //31250 for pg-200
 
 //Potentiometers
-#define POT_1_PIN 1
-#define POT_1_CC 23
+#define POT_1_PIN 0
+#define POT_1_CC 24
 
-#define POT_2_PIN 0
-#define POT_2_CC 17
+#define POT_2_PIN 1
+#define POT_2_CC 25
 
-#define POT_3_PIN A0
-#define POT_3_CC 22
+#define POT_3_PIN 2
+#define POT_3_CC 33
 
-#define POT_4_PIN A6
-#define POT_4_CC 28
+#define POT_4_PIN 3
+#define POT_4_CC 32
 
-const int N_POTS = 4;
+#define POT_5_PIN 4
+#define POT_5_CC 31
+
+#define POT_6_PIN 5
+#define POT_6_CC 30
+
+#define POT_7_PIN 6
+#define POT_7_CC 28
+
+#define POT_8_PIN 7
+#define POT_8_CC 29
+
+#define POT_9_PIN 8
+#define POT_9_CC 26
+
+#define POT_10_PIN 9
+#define POT_10_CC 18
+
+#define POT_11_PIN 10
+#define POT_11_CC 19
+
+#define POT_12_PIN 11
+#define POT_12_CC 23
+
+#define POT_13_PIN 12
+#define POT_13_CC 16
+
+#define POT_14_PIN 13
+#define POT_14_CC 21
+
+#define POT_15_PIN 14
+#define POT_15_CC 20
+
+#define POT_16_PIN 15
+#define POT_16_CC 17
+
+#define POT_17_PIN A0
+#define POT_17_CC 22
+
+#define POT_18_PIN A6
+#define POT_18_CC 27
+
+const int N_POTS = 18;
 
 Pot pots[N_POTS] = {
   Pot(mux_analog, POT_1_PIN,POT_1_CC),  //pin of mux
   Pot(mux_analog, POT_2_PIN,POT_2_CC),  //pin of mux
-  Pot(mux_analog, POT_3_PIN,POT_3_CC, false), //pin of arduino
-  Pot(mux_analog, POT_4_PIN,POT_4_CC, false), //pin of arduino
+  Pot(mux_analog, POT_3_PIN,POT_3_CC),  //pin of mux
+  Pot(mux_analog, POT_4_PIN,POT_4_CC),  //pin of mux
+  Pot(mux_analog, POT_5_PIN,POT_5_CC),  //pin of mux
+  Pot(mux_analog, POT_6_PIN,POT_6_CC),  //pin of mux
+  Pot(mux_analog, POT_7_PIN,POT_7_CC),  //pin of mux
+  Pot(mux_analog, POT_8_PIN,POT_8_CC),  //pin of mux
+  Pot(mux_analog, POT_9_PIN,POT_9_CC),  //pin of mux
+  Pot(mux_analog, POT_10_PIN,POT_10_CC),  //pin of mux
+  Pot(mux_analog, POT_11_PIN,POT_11_CC),  //pin of mux
+  Pot(mux_analog, POT_12_PIN,POT_12_CC),  //pin of mux
+  Pot(mux_analog, POT_13_PIN,POT_13_CC),  //pin of mux
+  Pot(mux_analog, POT_14_PIN,POT_14_CC),  //pin of mux
+  Pot(mux_analog, POT_15_PIN,POT_15_CC),  //pin of mux
+  Pot(mux_analog, POT_16_PIN,POT_16_CC),  //pin of mux
+  Pot(mux_analog, POT_17_PIN,POT_17_CC, false), //pin of arduino
+  Pot(mux_analog, POT_18_PIN,POT_18_CC, false), //pin of arduino
 };
 
 
