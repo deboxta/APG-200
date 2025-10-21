@@ -6,7 +6,7 @@ Group::Group(byte CC, int nbInGroup) {
 }
 
 void Group::init() {
-  update();
+//  update();
 }
 
 void Group::addSwitch(Switch* sw) {
@@ -23,20 +23,12 @@ void Group::update() {
     lastValue = value;
 
     newValue = newValue ^ switches[i]->getValue();
-//    Serial.println(newValue);
-//    Serial.println(value);
-
   }
   value = newValue;
 
   if (lastValue != value) {
     bitMask = lastValue ^ value;
     isChanged = true;
-//    Serial.println("value changed!");
-//    Serial.println(value, BIN);
-//    Serial.println(bitMask, BIN);
-
-
   }
 }
 

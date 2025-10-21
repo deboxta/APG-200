@@ -36,57 +36,59 @@ Button manualBtn(BUTTON_2_PIN, BUTTON_2_CC, BUTTON_2_VALUE);
 #define BAUD 31250 // 57600  //31250 for pg-200
 
 //Potentiometers
+
+//Env mod
 #define POT_1_PIN 0
 #define POT_1_CC 24
-
+//LFO mod 
 #define POT_2_PIN 1
 #define POT_2_CC 25
-
+//Release
 #define POT_3_PIN 2
 #define POT_3_CC 33
-
+//Sustain 
 #define POT_4_PIN 3
 #define POT_4_CC 32
-
+//Decay 
 #define POT_5_PIN 4
 #define POT_5_CC 31
-
+//Attack  
 #define POT_6_PIN 5
 #define POT_6_CC 30
-
+//LFO rate
 #define POT_7_PIN 6
 #define POT_7_CC 28
-
+//LFO delay time
 #define POT_8_PIN 7
 #define POT_8_CC 29
-
+//Pitch follow
 #define POT_9_PIN 8
 #define POT_9_CC 26
-
+//Env amount 
 #define POT_10_PIN 9
 #define POT_10_CC 18
-
+//LFO amount
 #define POT_11_PIN 10
 #define POT_11_CC 19
-
+//Cut off freq
 #define POT_12_PIN 11
 #define POT_12_CC 23
-
+//Fine tune
 #define POT_13_PIN 12
 #define POT_13_CC 16
-
+//HPF
 #define POT_14_PIN 13
 #define POT_14_CC 21
-
+//Source mix
 #define POT_15_PIN 14
 #define POT_15_CC 20
-
+//Tune 
 #define POT_16_PIN 15
 #define POT_16_CC 17
-
+//Resonance 
 #define POT_17_PIN A0
 #define POT_17_CC 22
-
+//VCA level
 #define POT_18_PIN A6
 #define POT_18_CC 27
 
@@ -115,9 +117,39 @@ Pot* pots[N_POTS] = {
 
 
 //Switches
-//#define SWITCH_1_PIN 14
-//#define SWITCH_1_BITPOS1 3
-//#define SWITCH_1_GROUPCC 2
+
+//LFO switch DCO 1
+#define SWITCH_1_PIN 8
+#define SWITCH_1_BITPOS1 7
+#define SWITCH_1_GROUPCC 1
+//Env switch DCO 1
+#define SWITCH_2_PIN 9
+#define SWITCH_2_BITPOS1 6
+#define SWITCH_2_GROUPCC 1
+//Env polarity, DCOs
+#define SWITCH_3_PIN 10
+#define SWITCH_3_BITPOS1 2
+#define SWITCH_3_GROUPCC 2
+//LFO switch DCO 2
+#define SWITCH_4_PIN 11
+#define SWITCH_4_BITPOS1 5
+#define SWITCH_4_GROUPCC 1
+//Env switch DCO 2
+#define SWITCH_5_PIN 12
+#define SWITCH_5_BITPOS1 4
+#define SWITCH_5_GROUPCC 1
+//Env polarity, VCF
+#define SWITCH_6_PIN 13
+#define SWITCH_6_BITPOS1 2
+#define SWITCH_6_GROUPCC 1
+//Chorus
+#define SWITCH_7_PIN 14
+#define SWITCH_7_BITPOS1 3
+#define SWITCH_7_GROUPCC 2
+//VCA mode
+#define SWITCH_8_PIN 15
+#define SWITCH_8_BITPOS1 3
+#define SWITCH_8_GROUPCC 1
 
 const int N_GROUPS = 2;
 
@@ -125,11 +157,6 @@ Group* groups[N_GROUPS] = {
   new Group(1,6),
   new Group(2, 2)
 };
-
-//Switch switches[N_SWITCHES] = {
-//  Switch({2}, SWITCH_1_GROUPCC, 1),
-//  Switch({3})
-//}
 
 //Settings
 int delayBetweenWrites = 20;
@@ -150,15 +177,15 @@ void setup ()
     pots[i]->init();
   }
   
-  groups[0]->addSwitch(new Switch(mux_digital, 13, 2, 1, true));
-  groups[0]->addSwitch(new Switch(mux_digital, 15, 3, 1, true));
-  groups[0]->addSwitch(new Switch(mux_digital, 12, 4, 1, true));
-  groups[0]->addSwitch(new Switch(mux_digital, 11, 5, 1, true));
-  groups[0]->addSwitch(new Switch(mux_digital, 9, 6, 1, true));
-  groups[0]->addSwitch(new Switch(mux_digital, 8, 7, 1, true));
+  groups[0]->addSwitch(new Switch(mux_digital, SWITCH_6_PIN, SWITCH_6_BITPOS1, SWITCH_6_GROUPCC, true));
+  groups[0]->addSwitch(new Switch(mux_digital, SWITCH_8_PIN, SWITCH_8_BITPOS1, SWITCH_8_GROUPCC, true));
+  groups[0]->addSwitch(new Switch(mux_digital, SWITCH_5_PIN, SWITCH_5_BITPOS1, SWITCH_5_GROUPCC, true));
+  groups[0]->addSwitch(new Switch(mux_digital, SWITCH_4_PIN, SWITCH_4_BITPOS1, SWITCH_4_GROUPCC, true));
+  groups[0]->addSwitch(new Switch(mux_digital, SWITCH_2_PIN, SWITCH_2_BITPOS1, SWITCH_2_GROUPCC, true));
+  groups[0]->addSwitch(new Switch(mux_digital, SWITCH_1_PIN, SWITCH_1_BITPOS1, SWITCH_1_GROUPCC, true));
 
-  groups[1]->addSwitch(new Switch(mux_digital, 14, 3, 2, true));
-  groups[1]->addSwitch(new Switch(mux_digital, 10, 2, 2, true));
+  groups[1]->addSwitch(new Switch(mux_digital, SWITCH_7_PIN, SWITCH_7_BITPOS1, SWITCH_7_GROUPCC, true));
+  groups[1]->addSwitch(new Switch(mux_digital, SWITCH_3_PIN, SWITCH_3_BITPOS1, SWITCH_3_GROUPCC, true));
 
   groups[0]->init();
   groups[1]->init();
