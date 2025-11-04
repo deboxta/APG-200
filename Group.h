@@ -7,13 +7,13 @@
 class Group {
   private:
     byte CC;
-    byte bitMask;
-    byte value;
-    byte lastValue;
+    byte bitMask = 0b00000000;;
+    byte value = 0b00000000;;
+    byte lastValue = 0b00000000;;
     int index = 0;
-    Switch* switches[10];
+    Switch* switches[7];
     bool isChanged = false;
-    int nbInGroup;
+    int nbInGroup= 0;
   public:
     Group(byte CC, int nbInGroup);
     void init();

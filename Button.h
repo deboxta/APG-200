@@ -10,11 +10,11 @@ class Button {
     byte state;
     byte lastState;
     byte value;
+    bool pressed;
 
     //Debounce buttons
     unsigned long lastDebounceTime = 0;
-    unsigned long debounceTimer = 0;
-    unsigned long debounceDelay = 4;
+    unsigned long debounceDelay = 50;
 
   public:
     Button(byte pin, byte CC, byte value);
@@ -22,7 +22,6 @@ class Button {
     void init();
     void update();
 
-    byte getState();
     bool isPressed();
     byte getValue();
     byte getCC();
@@ -30,4 +29,3 @@ class Button {
 };
 
 #endif
-

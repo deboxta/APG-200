@@ -6,7 +6,9 @@ Group::Group(byte CC, int nbInGroup) {
 }
 
 void Group::init() {
-//  update();
+  for (int i = 0; i < nbInGroup; i++) {
+    switches[i]->init();
+  }
 }
 
 void Group::addSwitch(Switch* sw) {

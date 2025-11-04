@@ -8,37 +8,31 @@ Button::Button(byte pin, byte CC, byte value) {
 
 void Button::init() {
   pinMode(pin, INPUT);
-  state = HIGH;
-  lastState = HIGH;
-  update();
+  lastState = LOW;
 }
 
 void Button::update() {
-  state = HIGH;
+  pressed = false;
   byte newState = digitalRead(pin);
-  debounceTimer = millis() - lastDebounceTime;
 
   if (newState != lastState) {
     lastDebounceTime = millis();
-
-  
-    if (debounceTimer > debounceDelay) {
-      if (newState != state) {
-            state = newState;
-      }
-      lastState = newState;
-    }
   }
   
-}
-
-byte Button::getState() {
-  update();
-  return state;
+  if ((millis() - lastDebounceTime) > debounceDelay) {
+    if (newState != state) {
+      state = newState;
+      if (state == LOW) {
+        pressed = true;
+      }
+    }
+  }
+  lastState = newState;
 }
 
 bool Button::isPressed() {
-  return (getState() == LOW);
+  update();
+  return (pressed);
 }
 
 byte Button::getValue() {
@@ -48,4 +42,3 @@ byte Button::getValue() {
 byte Button::getCC() {
   return CC;
 }
-

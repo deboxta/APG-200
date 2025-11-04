@@ -20,10 +20,10 @@ class Pot {
     bool isMuxPinned = true;
 
     //Smoothing pot
-    byte threshold = 20;
+    byte threshold = 25;
     unsigned long lastTime = 0;
     unsigned long timer = 0;
-    const int TIMEOUT = 300; //in milliseconds
+    const int TIMEOUT = 200; //in milliseconds
     
     //ResponsiveAnalogRead.h
     float snapMultiplier = 0.01; // (0.0 - 1.0) - Increase for faster, but less smooth reading

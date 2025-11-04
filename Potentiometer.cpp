@@ -20,6 +20,9 @@ void Pot::init() {
   read();
   lastState = state;
   lastValue = value;
+  timer = TIMEOUT;    
+//  lastTime = millis(); //reset
+
 //  update();
 }
 
@@ -34,16 +37,20 @@ byte Pot::getPin() {
 void Pot::update() {
   isChanged = false;
   read();
-
+  
   int variation = abs(state - lastState);
 
   if (variation > threshold) {
     lastTime = millis(); //reset
   }
 
-  timer = millis() - lastTime;
+  if (millis() > TIMEOUT){
+      timer = millis() - lastTime;
+  }
 
-  if (timer < TIMEOUT && millis() >= TIMEOUT) {
+
+
+  if (timer < TIMEOUT) {
     if (value != lastValue) {
       isChanged = true;
       lastValue = value;
@@ -61,7 +68,7 @@ void Pot::read() {
   reading = analogRead(getPin());
   responsivePot.update(reading);
   state = responsivePot.getValue();
-  value = map(state, 0, 1023, 0, 256);
+  value = map(state, 0, 1023, 0, 255);
 }
 
 byte Pot::getValue() {
