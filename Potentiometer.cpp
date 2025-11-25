@@ -1,12 +1,14 @@
 #include "Potentiometer.h"
 
-Pot::Pot(Mux &mux, byte pin, byte CC, bool isMuxPinned): mux(mux) {
+Pot::Pot(Mux *mux, byte pin, byte CC, bool isMuxPinned) {
+  this->mux = mux;
   this->isMuxPinned = isMuxPinned;
   this->pin = pin;
   this->CC = CC;
 }
 
-Pot::Pot(Mux &mux, byte pin, byte CC): mux(mux) {
+Pot::Pot(Mux *mux, byte pin, byte CC) {
+  this->mux = mux;
   this->pin = pin;
   this->CC = CC;
 }
@@ -20,15 +22,13 @@ void Pot::init() {
   read();
   lastState = state;
   lastValue = value;
-  timer = TIMEOUT;    
-//  lastTime = millis(); //reset
 
-//  update();
+  update();
 }
 
 byte Pot::getPin() {
   if (isMuxPinned) {
-    return mux.getPrimaryPin();
+    return mux->getPrimaryPin();
   } else {
     return pin;
   }
@@ -40,15 +40,11 @@ void Pot::update() {
   
   int variation = abs(state - lastState);
 
-  if (variation > threshold) {
+  if (variation >= threshold) {
     lastTime = millis(); //reset
   }
 
-  if (millis() > TIMEOUT){
-      timer = millis() - lastTime;
-  }
-
-
+  timer = millis() - lastTime;
 
   if (timer < TIMEOUT) {
     if (value != lastValue) {
@@ -62,7 +58,7 @@ void Pot::update() {
 
 void Pot::read() {
   if (isMuxPinned) {
-    mux.channel(pin);
+    mux->channel(pin);
   }
 
   reading = analogRead(getPin());

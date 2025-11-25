@@ -1,4 +1,3 @@
-#include "Arduino.h"
 #include "Mux.h"
 
 Mux::Mux(byte primaryPin, uint8_t s0, uint8_t s1, uint8_t s2, uint8_t s3) {

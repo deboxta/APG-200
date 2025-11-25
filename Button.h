@@ -14,7 +14,7 @@ class Button {
 
     //Debounce buttons
     unsigned long lastDebounceTime = 0;
-    unsigned long debounceDelay = 50;
+    const unsigned long debounceDelay = 50;
 
   public:
     Button(byte pin, byte CC, byte value);

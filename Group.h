@@ -1,7 +1,6 @@
 #ifndef GROUP_H
 #define GROUP_H
 
-#include <Arduino.h>
 #include "Switch.h"
 
 class Group {
@@ -10,12 +9,12 @@ class Group {
     byte bitMask = 0b00000000;;
     byte value = 0b00000000;;
     byte lastValue = 0b00000000;;
-    int index = 0;
+    byte index = 0;
     Switch* switches[7];
     bool isChanged = false;
-    int nbInGroup= 0;
+    byte nbInGroup= 0;
   public:
-    Group(byte CC, int nbInGroup);
+    Group(byte CC, byte nbInGroup);
     void init();
     void update();
     byte getCC();

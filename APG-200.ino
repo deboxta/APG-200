@@ -32,10 +32,10 @@ Mux mux_digital(MUX2_PIN, 3, 4, 5, 6);
 #define BUTTON_2_CC 130
 #define BUTTON_2_VALUE 255
 
-Button* writeBtn = new Button(BUTTON_1_PIN, BUTTON_1_CC, BUTTON_1_VALUE);
-Button* manualBtn = new Button(BUTTON_2_PIN, BUTTON_2_CC, BUTTON_2_VALUE);
+Button writeBtn(BUTTON_1_PIN, BUTTON_1_CC, BUTTON_1_VALUE);
+Button manualBtn(BUTTON_2_PIN, BUTTON_2_CC, BUTTON_2_VALUE);
 
-#define BAUD 57600 // 57600  //31250 for pg-200
+#define BAUD 31250 // 57600  //31250 for pg-200
 
 //Potentiometers
 
@@ -94,28 +94,50 @@ Button* manualBtn = new Button(BUTTON_2_PIN, BUTTON_2_CC, BUTTON_2_VALUE);
 #define POT_18_PIN A6
 #define POT_18_CC 27
 
-const int N_POTS = 18;
+Pot pot1(&mux_analog, POT_1_PIN, POT_1_CC); //pin of mux
+Pot pot2(&mux_analog, POT_2_PIN, POT_2_CC); //pin of mux
+Pot pot3(&mux_analog, POT_3_PIN, POT_3_CC); //pin of mux
+Pot pot4(&mux_analog, POT_4_PIN, POT_4_CC); //pin of mux
+Pot pot5(&mux_analog, POT_5_PIN, POT_5_CC); //pin of mux
+Pot pot6(&mux_analog, POT_6_PIN, POT_6_CC); //pin of mux
+Pot pot7(&mux_analog, POT_7_PIN, POT_7_CC); //pin of mux
+Pot pot8(&mux_analog, POT_8_PIN, POT_8_CC); //pin of mux
+Pot pot9(&mux_analog, POT_9_PIN, POT_9_CC); //pin of mux
+Pot pot10(&mux_analog, POT_10_PIN, POT_10_CC); //pin of mux
+Pot pot11(&mux_analog, POT_11_PIN, POT_11_CC); //pin of mux
+Pot pot12(&mux_analog, POT_12_PIN, POT_12_CC); //pin of mux
+Pot pot13(&mux_analog, POT_13_PIN, POT_13_CC); //pin of mux
+Pot pot14(&mux_analog, POT_14_PIN, POT_14_CC); //pin of mux
+Pot pot15(&mux_analog, POT_15_PIN, POT_15_CC); //pin of mux
+Pot pot16(&mux_analog, POT_16_PIN, POT_16_CC); //pin of mux
+Pot pot17(&mux_analog, POT_17_PIN, POT_17_CC, false); //pin of arduino
+Pot pot18(&mux_analog, POT_18_PIN, POT_18_CC, false); //pin of arduino
 
-Pot* pots[N_POTS] = {
-  new Pot(mux_analog, POT_1_PIN, POT_1_CC), //pin of mux
-  new Pot(mux_analog, POT_2_PIN, POT_2_CC), //pin of mux
-  new Pot(mux_analog, POT_3_PIN, POT_3_CC), //pin of mux
-  new Pot(mux_analog, POT_4_PIN, POT_4_CC), //pin of mux
-  new Pot(mux_analog, POT_5_PIN, POT_5_CC), //pin of mux
-  new Pot(mux_analog, POT_6_PIN, POT_6_CC), //pin of mux
-  new Pot(mux_analog, POT_7_PIN, POT_7_CC), //pin of mux
-  new Pot(mux_analog, POT_8_PIN, POT_8_CC), //pin of mux
-  new Pot(mux_analog, POT_9_PIN, POT_9_CC), //pin of mux
-  new Pot(mux_analog, POT_10_PIN, POT_10_CC), //pin of mux
-  new Pot(mux_analog, POT_11_PIN, POT_11_CC), //pin of mux
-  new Pot(mux_analog, POT_12_PIN, POT_12_CC), //pin of mux
-  new Pot(mux_analog, POT_13_PIN, POT_13_CC), //pin of mux
-  new Pot(mux_analog, POT_14_PIN, POT_14_CC), //pin of mux
-  new Pot(mux_analog, POT_15_PIN, POT_15_CC), //pin of mux
-  new Pot(mux_analog, POT_16_PIN, POT_16_CC), //pin of mux
-  new Pot(mux_analog, POT_17_PIN, POT_17_CC, false), //pin of arduino
-  new Pot(mux_analog, POT_18_PIN, POT_18_CC, false), //pin of arduino
-};
+//const int N_POTS = 18;
+//
+//Pot* pots[N_POTS] = {
+//  &pot1,&pot2,&pot3,&pot4,&pot5,&pot6,&pot7,&pot8,&pot9,&pot10,&pot11,&pot12,&pot13,&pot14,&pot15,&pot16,&pot17,&pot18
+//};
+//Pot* pots[N_POTS] = {
+//  new Pot(&mux_analog, POT_1_PIN, POT_1_CC), //pin of mux
+//  new Pot(&mux_analog, POT_2_PIN, POT_2_CC), //pin of mux
+//  new Pot(&mux_analog, POT_3_PIN, POT_3_CC), //pin of mux
+//  new Pot(&mux_analog, POT_4_PIN, POT_4_CC), //pin of mux
+//  new Pot(&mux_analog, POT_5_PIN, POT_5_CC), //pin of mux
+//  new Pot(&mux_analog, POT_6_PIN, POT_6_CC), //pin of mux
+//  new Pot(&mux_analog, POT_7_PIN, POT_7_CC), //pin of mux
+//  new Pot(&mux_analog, POT_8_PIN, POT_8_CC), //pin of mux
+//  new Pot(&mux_analog, POT_9_PIN, POT_9_CC), //pin of mux
+//  new Pot(&mux_analog, POT_10_PIN, POT_10_CC), //pin of mux
+//  new Pot(&mux_analog, POT_11_PIN, POT_11_CC), //pin of mux
+//  new Pot(&mux_analog, POT_12_PIN, POT_12_CC), //pin of mux
+//  new Pot(&mux_analog, POT_13_PIN, POT_13_CC), //pin of mux
+//  new Pot(&mux_analog, POT_14_PIN, POT_14_CC), //pin of mux
+//  new Pot(&mux_analog, POT_15_PIN, POT_15_CC), //pin of mux
+//  new Pot(&mux_analog, POT_16_PIN, POT_16_CC), //pin of mux
+//  new Pot(&mux_analog, POT_17_PIN, POT_17_CC, false), //pin of arduino
+//  new Pot(&mux_analog, POT_18_PIN, POT_18_CC, false), //pin of arduino
+//};
 
 
 //Switches
@@ -190,12 +212,28 @@ Pot* pots[N_POTS] = {
 #define SWITCH_14_BITPOS2 1
 #define SWITCH_14_GROUPCC 2
 
-const int N_GROUPS = 3;
+const int N_GROUPS = 2;
 
-//Group group1(0, 4);
-//Group group2(1, 7);
-//Group group3(2, 3);
+Group group1(0, 4);
+Group group2(1, 7);
+Group group3(2, 3);
 
+DualPole dualPole1(&mux_digital, SWITCH_9_PIN, SWITCH_9_PIN2, SWITCH_9_BITPOS1, SWITCH_9_BITPOS2, SWITCH_9_GROUPCC, true, false);
+DualPole dualPole2(&mux_digital, SWITCH_10_PIN, SWITCH_10_PIN2, SWITCH_10_BITPOS1, SWITCH_10_BITPOS2, SWITCH_10_GROUPCC, false, true);
+DualPole dualPole3(&mux_digital, SWITCH_11_PIN, SWITCH_11_PIN2, SWITCH_11_BITPOS1, SWITCH_11_BITPOS2, SWITCH_11_GROUPCC, true, true);
+DualPole dualPole4(&mux_digital, SWITCH_12_PIN, SWITCH_12_PIN2, SWITCH_12_BITPOS1, SWITCH_12_BITPOS2, SWITCH_12_GROUPCC, true, true);
+
+DualPole dualPole5(&mux_digital, SWITCH_13_PIN, SWITCH_13_PIN2, SWITCH_13_BITPOS1, SWITCH_13_BITPOS2, SWITCH_13_GROUPCC, true, true);
+SinglePole singlePole1(&mux_digital, SWITCH_6_PIN, SWITCH_6_BITPOS1, SWITCH_6_GROUPCC, true);
+SinglePole singlePole2(&mux_digital, SWITCH_8_PIN, SWITCH_8_BITPOS1, SWITCH_8_GROUPCC, true);
+SinglePole singlePole3(&mux_digital, SWITCH_5_PIN, SWITCH_5_BITPOS1, SWITCH_5_GROUPCC, true);
+SinglePole singlePole4(&mux_digital, SWITCH_4_PIN, SWITCH_4_BITPOS1, SWITCH_4_GROUPCC, true);
+SinglePole singlePole5(&mux_digital, SWITCH_2_PIN, SWITCH_2_BITPOS1, SWITCH_2_GROUPCC, true);
+SinglePole singlePole6(&mux_digital, SWITCH_1_PIN, SWITCH_1_BITPOS1, SWITCH_1_GROUPCC, true);
+
+DualPole dualPole6(SWITCH_14_PIN, SWITCH_14_PIN2, SWITCH_14_BITPOS1, SWITCH_14_BITPOS2, SWITCH_14_GROUPCC);
+SinglePole singlePole7(&mux_digital, SWITCH_7_PIN, SWITCH_7_BITPOS1, SWITCH_7_GROUPCC, true);
+SinglePole singlePole8(&mux_digital, SWITCH_3_PIN, SWITCH_3_BITPOS1, SWITCH_3_GROUPCC, true);
 
 //Settings
 int delayBetweenWrites = 20;
@@ -206,40 +244,81 @@ int delayBetweenWrites = 20;
 void setup ()
 {
   Serial.begin (BAUD, SERIAL_8N1, true); // 9 bit mode
-//  Serial.println("test");
+  //  Serial.println("test");
   //inits
   mux_analog.init();
   mux_digital.init();
 
-  writeBtn->init();
-  manualBtn->init();
+  writeBtn.init();
+  manualBtn.init();
 
-  for (int i = 0; i < N_POTS; i++) {
-    pots[i]->init();
-  }
+  group1.addSwitch(&dualPole1);
+  group1.addSwitch(&dualPole2);
+  group1.addSwitch(&dualPole3);
+  group1.addSwitch(&dualPole4);
 
-//  group1.addSwitch(new DualPole(mux_digital, SWITCH_9_PIN, SWITCH_9_PIN2, SWITCH_9_BITPOS1, SWITCH_9_BITPOS2, SWITCH_9_GROUPCC, true, false));
-//  group1.addSwitch(new DualPole(mux_digital, SWITCH_10_PIN, SWITCH_10_PIN2, SWITCH_10_BITPOS1, SWITCH_10_BITPOS2, SWITCH_10_GROUPCC, false, true));
-//  group1.addSwitch(new DualPole(mux_digital, SWITCH_11_PIN, SWITCH_11_PIN2, SWITCH_11_BITPOS1, SWITCH_11_BITPOS2, SWITCH_11_GROUPCC, true, true));
-//  group1.addSwitch(new DualPole(mux_digital, SWITCH_12_PIN, SWITCH_12_PIN2, SWITCH_12_BITPOS1, SWITCH_12_BITPOS2, SWITCH_12_GROUPCC, true, true));
+  group2.addSwitch(&dualPole5);
+  group2.addSwitch(&singlePole1);
+  group2.addSwitch(&singlePole2);
+  group2.addSwitch(&singlePole3);
+  group2.addSwitch(&singlePole4);
+  group2.addSwitch(&singlePole5);
+  group2.addSwitch(&singlePole6);
 
-//  group2.addSwitch(new DualPole(mux_digital, SWITCH_13_PIN, SWITCH_13_PIN2, SWITCH_13_BITPOS1, SWITCH_13_BITPOS2, SWITCH_13_GROUPCC, true, true));
-//  group2.addSwitch(new SinglePole(mux_digital, SWITCH_6_PIN, SWITCH_6_BITPOS1, SWITCH_6_GROUPCC, true));
-//  group2.addSwitch(new SinglePole(mux_digital, SWITCH_8_PIN, SWITCH_8_BITPOS1, SWITCH_8_GROUPCC, true));
-//  group2.addSwitch(new SinglePole(mux_digital, SWITCH_5_PIN, SWITCH_5_BITPOS1, SWITCH_5_GROUPCC, true));
-//  group2.addSwitch(new SinglePole(mux_digital, SWITCH_4_PIN, SWITCH_4_BITPOS1, SWITCH_4_GROUPCC, true));
-//  group2.addSwitch(new SinglePole(mux_digital, SWITCH_2_PIN, SWITCH_2_BITPOS1, SWITCH_2_GROUPCC, true));
-//  group2.addSwitch(new SinglePole(mux_digital, SWITCH_1_PIN, SWITCH_1_BITPOS1, SWITCH_1_GROUPCC, true));
+  group3.addSwitch(&dualPole6);
+  group3.addSwitch(&singlePole7);
+  group3.addSwitch(&singlePole8);
 
+
+
+
+//  group1.addSwitch(new DualPole(&mux_digital, SWITCH_9_PIN, SWITCH_9_PIN2, SWITCH_9_BITPOS1, SWITCH_9_BITPOS2, SWITCH_9_GROUPCC, true, false));
+//  group1.addSwitch(new DualPole(&mux_digital, SWITCH_10_PIN, SWITCH_10_PIN2, SWITCH_10_BITPOS1, SWITCH_10_BITPOS2, SWITCH_10_GROUPCC, false, true));
+//  group1.addSwitch(new DualPole(&mux_digital, SWITCH_11_PIN, SWITCH_11_PIN2, SWITCH_11_BITPOS1, SWITCH_11_BITPOS2, SWITCH_11_GROUPCC, true, true));
+//  group1.addSwitch(new DualPole(&mux_digital, SWITCH_12_PIN, SWITCH_12_PIN2, SWITCH_12_BITPOS1, SWITCH_12_BITPOS2, SWITCH_12_GROUPCC, true, true));
+
+//  group2.addSwitch(new DualPole(&mux_digital, SWITCH_13_PIN, SWITCH_13_PIN2, SWITCH_13_BITPOS1, SWITCH_13_BITPOS2, SWITCH_13_GROUPCC, true, true));
+//  group2.addSwitch(new SinglePole(&mux_digital, SWITCH_6_PIN, SWITCH_6_BITPOS1, SWITCH_6_GROUPCC, true));
+//  group2.addSwitch(new SinglePole(&mux_digital, SWITCH_8_PIN, SWITCH_8_BITPOS1, SWITCH_8_GROUPCC, true));
+//  group2.addSwitch(new SinglePole(&mux_digital, SWITCH_5_PIN, SWITCH_5_BITPOS1, SWITCH_5_GROUPCC, true));
+//  group2.addSwitch(new SinglePole(&mux_digital, SWITCH_4_PIN, SWITCH_4_BITPOS1, SWITCH_4_GROUPCC, true));
+//  group2.addSwitch(new SinglePole(&mux_digital, SWITCH_2_PIN, SWITCH_2_BITPOS1, SWITCH_2_GROUPCC, true));
+//  group2.addSwitch(new SinglePole(&mux_digital, SWITCH_1_PIN, SWITCH_1_BITPOS1, SWITCH_1_GROUPCC, true));
+//
 //  group3.addSwitch(new DualPole(SWITCH_14_PIN, SWITCH_14_PIN2, SWITCH_14_BITPOS1, SWITCH_14_BITPOS2, SWITCH_14_GROUPCC));
-//  group3.addSwitch(new SinglePole(mux_digital, SWITCH_7_PIN, SWITCH_7_BITPOS1, SWITCH_7_GROUPCC, true));
-//  group3.addSwitch(new SinglePole(mux_digital, SWITCH_3_PIN, SWITCH_3_BITPOS1, SWITCH_3_GROUPCC, true));
-
-//  group1.init();
-//  group2.init();
-//  group3.init();
+//  group3.addSwitch(new SinglePole(&mux_digital, SWITCH_7_PIN, SWITCH_7_BITPOS1, SWITCH_7_GROUPCC, true));
+//  group3.addSwitch(new SinglePole(&mux_digital, SWITCH_3_PIN, SWITCH_3_BITPOS1, SWITCH_3_GROUPCC, true));
 
 
+  group1.init();
+  group2.init();
+  group3.init();
+
+//  for (int i = 0; i < N_POTS; i++) {
+//    pots[i]->init();
+//  }
+  pot1.init();
+  pot2.init();
+  pot3.init();
+  pot4.init();
+  pot5.init();
+  pot6.init();
+  pot7.init();
+  pot8.init();
+  pot9.init();
+  pot10.init();
+  pot11.init();
+  pot12.init();
+  pot13.init();
+  pot14.init();
+  pot15.init();
+  pot16.init();
+  pot17.init();
+  pot18.init();
+
+
+  
+//  Serial.println("ok");
 
   //Startup ping
   delay(2500);
@@ -254,64 +333,157 @@ void setup ()
 
 void loop ()
 {
-  if (writeBtn->isPressed()) {
-    send(writeBtn->getCC(), 1);
-    send(writeBtn->getValue(), 0);
+  if (writeBtn.isPressed()) {
+    send(writeBtn.getCC(), 1);
+    send(writeBtn.getValue(), 0);
   }
 
-  if (manualBtn->isPressed()) {
-    send(manualBtn->getCC(), 1);
-    send(manualBtn->getValue(), 0);
+  if (manualBtn.isPressed()) {
+    send(manualBtn.getCC(), 1);
+    send(manualBtn.getValue(), 0);
     send(0, 0);
     sendAll();
   }
 
-  for (int i = 0; i < N_POTS; i++) {
-    if (pots[i]->hasChanged()) {
+//  for (int i = 0; i < N_POTS; i++) {
+//    if (pots[i]->hasChanged()) {
 //      send(pots[i]->getCC(), 1);
 //      send(pots[i]->getValue(), 0);
-      Serial.println(i);
-    }
-  }
+//      Serial.println("ho");
+//    }
+//  }
 
-//  if (group1.hasChanged()) {
-//    send(group1.getCC(), 1);
-//    send(group1.getMask(), 0);
-//    send(group1.getValue(), 0);
-//  }
-//  if (group2.hasChanged()) {
-//    send(group2.getCC(), 1);
-//    send(group2.getMask(), 0);
-//    send(group2.getValue(), 0);
-//  }
-//  if (group3.hasChanged()) {
-//    send(group3.getCC(), 1);
-//    send(group3.getMask(), 0);
-//    send(group3.getValue(), 0);
-//  }
+  if (pot1.hasChanged()) {
+    send(pot1.getCC(), 1);
+    send(pot1.getValue(), 0);
+//    Serial.println("ho");
+  }
+  if (pot2.hasChanged()) {
+    send(pot2.getCC(), 1);
+    send(pot2.getValue(), 0);
+//    Serial.println("ho");
+  }
+  if (pot3.hasChanged()) {
+    send(pot3.getCC(), 1);
+    send(pot3.getValue(), 0);
+//    Serial.println("ho");
+  }
+  if (pot4.hasChanged()) {
+    send(pot4.getCC(), 1);
+    send(pot4.getValue(), 0);
+//    Serial.println("ho");
+  }
+  if (pot5.hasChanged()) {
+    send(pot5.getCC(), 1);
+    send(pot5.getValue(), 0);
+//    Serial.println("ho");
+  }
+  if (pot6.hasChanged()) {
+    send(pot6.getCC(), 1);
+    send(pot6.getValue(), 0);
+//    Serial.println("ho");
+  }
+  if (pot7.hasChanged()) {
+    send(pot7.getCC(), 1);
+    send(pot7.getValue(), 0);
+//    Serial.println("ho");
+  }
+  if (pot8.hasChanged()) {
+    send(pot8.getCC(), 1);
+    send(pot8.getValue(), 0);
+//    Serial.println("ho");
+  }
+  if (pot9.hasChanged()) {
+    send(pot9.getCC(), 1);
+    send(pot9.getValue(), 0);
+//    Serial.println("ho");
+  }
+  if (pot10.hasChanged()) {
+    send(pot10.getCC(), 1);
+    send(pot10.getValue(), 0);
+//    Serial.println("ho");
+  }
+  if (pot11.hasChanged()) {
+    send(pot11.getCC(), 1);
+    send(pot11.getValue(), 0);
+//    Serial.println("ho");
+  }
+  if (pot12.hasChanged()) {
+    send(pot12.getCC(), 1);
+    send(pot12.getValue(), 0);
+//    Serial.println("ho");
+  }
+  if (pot13.hasChanged()) {
+    send(pot13.getCC(), 1);
+    send(pot13.getValue(), 0);
+//      Serial.println("ho");
+  }
+  if (pot14.hasChanged()) {
+    send(pot14.getCC(), 1);
+    send(pot14.getValue(), 0);
+//    Serial.println("ho");
+  }
+  if (pot15.hasChanged()) {
+    send(pot15.getCC(), 1);
+    send(pot15.getValue(), 0);
+//    Serial.println("ho");
+  }
+  if (pot16.hasChanged()) {
+    send(pot16.getCC(), 1);
+    send(pot16.getValue(), 0);
+//    Serial.println("ho");
+  }
+  if (pot17.hasChanged()) {
+    send(pot17.getCC(), 1);
+    send(pot17.getValue(), 0);
+//    Serial.println("ho");
+  }
+  if (pot18.hasChanged()) {
+    send(pot18.getCC(), 1);
+    send(pot18.getValue(), 0);
+//    Serial.println("ho");
+  }
+  
+
+  if (group1.hasChanged()) {
+    send(group1.getCC(), 1);
+    send(group1.getMask(), 0);
+    send(group1.getValue(), 0);
+  }
+  if (group2.hasChanged()) {
+    send(group2.getCC(), 1);
+    send(group2.getMask(), 0);
+    send(group2.getValue(), 0);
+//    Serial.println("fuck1");
+  }
+  if (group3.hasChanged()) {
+    send(group3.getCC(), 1);
+    send(group3.getMask(), 0);
+    send(group3.getValue(), 0);
+//    Serial.println("fuck2");
+  }
 }  // end of loop
 
 
 /* =================================================== */
 
 void sendAll() {
-//      Serial.println("yo3");
 
   //Pots
-  for (int i = 0; i < N_POTS; i++) {
-    send(pots[i]->getCC(), 1);
-    send(pots[i]->getValue(), 0);
-  }
+//  for (int i = 0; i < N_POTS; i++) {
+//    send(pots[i]->getCC(), 1);
+//    send(pots[i]->getValue(), 0);
+//  }
 
   //Switches
-//  send(group1.getCC(), 1);
-//  send(group1.getMask(), 0);
-//  send(group1.getValue(), 0);
-//
-//  send(group2.getCC(), 1);
-//  send(group2.getMask(), 0);
-//  send(group2.getValue(), 0);
-//
+  //  send(group1.getCC(), 1);
+  //  send(group1.getMask(), 0);
+  //  send(group1.getValue(), 0);
+
+  //  send(group2.getCC(), 1);
+  //  send(group2.getMask(), 0);
+  //  send(group2.getValue(), 0);
+
 //  send(group3.getCC(), 1);
 //  send(group3.getMask(), 0);
 //  send(group3.getValue(), 0);
@@ -320,7 +492,7 @@ void sendAll() {
 
 void send(byte value, int ind) {
   delay(delayBetweenWrites);
-  Serial.write9bit(to9Bits(value, ind));
+    Serial.write9bit(to9Bits(value, ind));
 }
 
 int to9Bits(int address, int value)

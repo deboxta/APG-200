@@ -8,7 +8,7 @@ class Switch {
   private:
 
   public:
-    Mux &mux;
+    Mux* mux;
     byte pin;
     byte bitPos;
     byte CC;
@@ -17,18 +17,17 @@ class Switch {
     bool isMuxPinned = false;
     
     // Variables will change:
-    int buttonState;             // current reading from the input pin
-    int lastButtonState = LOW;   // previous reading from the input pin
+    byte buttonState;             // current reading from the input pin
+    byte lastButtonState = LOW;   // previous reading from the input pin
     
     // the following variables are unsigned longs because the time, measured in milliseconds,
     // will quickly become a bigger number than can be stored in an int.
     unsigned long lastDebounceTime = 0;  // the last time the output pin was toggled
-    unsigned long debounceDelay = 50;    // the debounce time; increase if the output flickers
+    const unsigned long debounceDelay = 50;    // the debounce time; increase if the output flickers
   
-    Switch(Mux &mux, byte pin, byte bitPos, byte CC, bool isMuxPinned);
+    Switch(Mux* mux, byte pin, byte bitPos, byte CC, bool isMuxPinned);
     Switch(byte pin, byte bitPos, byte CC);
 
-    virtual void init() = 0;
     virtual void update() = 0;
     byte getValue();
     virtual byte getPin();
