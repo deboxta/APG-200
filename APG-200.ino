@@ -1,77 +1,259 @@
 /*############################################
-#
-#  APG-200 
-#  a PG200 emulator
-#
-#  (c) Yannick Côté
-#
-#  Emulate the roland PG-200 protocol
-#
-############################################*/
+  #
+  #  APG-200
+  #  a PG200 emulator
+  #
+  #  (c) Yannick Côté
+  #
+  #  Emulate the roland PG-200 protocol
+  #
+  ############################################*/
 
-#include <ResponsiveAnalogRead.h>
+#include "Button.h"
+#include "Potentiometer.h"
+#include "Switch.h"
+#include "SinglePole.h"
+#include "DualPole.h"
+#include "Group.h"
+#include "Mux.h"
 
-int delayBetweenWrites = 20;
+//MUX
+#define MUX1_PIN A2
+Mux mux_analog(MUX1_PIN, A1, A5, A4, A3);
+#define MUX2_PIN 7
+Mux mux_digital(MUX2_PIN, 3, 4, 5, 6);
 
 //Buttons
-const int N_BUTTONS = 2;
-byte buttonPin[N_BUTTONS] = {2, 6};
-int buttonCC[N_BUTTONS] = {129, 130};
-int buttonState[N_BUTTONS] = {HIGH};
-int buttonPState[N_BUTTONS] = {HIGH}; //previous
-int buttonDataState[N_BUTTONS] = {0, 255}; //value to send
+#define BUTTON_1_PIN 12 //D12
+#define BUTTON_1_CC 129
+#define BUTTON_1_VALUE 0
 
-//Debounce buttons
-unsigned long lastDebounceTime[N_BUTTONS] = {0};
-unsigned long debounceTimer[N_BUTTONS] = {0};
-int debounceDelay = 4;
+#define BUTTON_2_PIN 11 //D11
+#define BUTTON_2_CC 130
+#define BUTTON_2_VALUE 255
 
+Button writeBtn(BUTTON_1_PIN, BUTTON_1_CC, BUTTON_1_VALUE);
+Button manualBtn(BUTTON_2_PIN, BUTTON_2_CC, BUTTON_2_VALUE);
+
+#define BAUD 31250 // 57600  //31250 for pg-200
 
 //Potentiometers
-const int N_POTS = 2;
-byte potPin[N_POTS] = {A0, A1};
-int potCC[N_POTS] = {23, 17};
-int potReading[N_POTS] = {0};
-int potState[N_POTS] = {0};
-int potPState[N_POTS] = {0}; //previous
-int potDataState[N_POTS] = {0};
-int potDataPState[N_POTS] = {0}; //previous
 
-//Smoothing pot
-byte potThreshold = 20;
-unsigned long lastPotTime[N_POTS] = {0};
-unsigned long potTimer[N_POTS] = {0};
-const int POT_TIMEOUT = 300; //in milliseconds
-//ResponsiveAnalogRead.h
-float snapMultiplier = 0.01; // (0.0 - 1.0) - Increase for faster, but less smooth reading
-ResponsiveAnalogRead responsivePot[N_POTS] = {};
+//Env mod
+#define POT_1_PIN 0
+#define POT_1_CC 24
+//LFO mod
+#define POT_2_PIN 1
+#define POT_2_CC 25
+//Release
+#define POT_3_PIN 2
+#define POT_3_CC 33
+//Sustain
+#define POT_4_PIN 3
+#define POT_4_CC 32
+//Decay
+#define POT_5_PIN 4
+#define POT_5_CC 31
+//Attack
+#define POT_6_PIN 5
+#define POT_6_CC 30
+//LFO rate
+#define POT_7_PIN 6
+#define POT_7_CC 28
+//LFO delay time
+#define POT_8_PIN 7
+#define POT_8_CC 29
+//Pitch follow
+#define POT_9_PIN 8
+#define POT_9_CC 26
+//Env amount
+#define POT_10_PIN 9
+#define POT_10_CC 18
+//LFO amount
+#define POT_11_PIN 10
+#define POT_11_CC 19
+//Cut off freq
+#define POT_12_PIN 11
+#define POT_12_CC 23
+//Fine tune
+#define POT_13_PIN 12
+#define POT_13_CC 16
+//HPF
+#define POT_14_PIN 13
+#define POT_14_CC 21
+//Source mix
+#define POT_15_PIN 14
+#define POT_15_CC 20
+//Tune
+#define POT_16_PIN 15
+#define POT_16_CC 17
+//Resonance
+#define POT_17_PIN A0
+#define POT_17_CC 22
+//VCA level
+#define POT_18_PIN A6
+#define POT_18_CC 27
 
-/* =================================================== */
+Pot pot1(&mux_analog, POT_1_PIN, POT_1_CC); //pin of mux
+Pot pot2(&mux_analog, POT_2_PIN, POT_2_CC); //pin of mux
+Pot pot3(&mux_analog, POT_3_PIN, POT_3_CC); //pin of mux
+Pot pot4(&mux_analog, POT_4_PIN, POT_4_CC); //pin of mux
+Pot pot5(&mux_analog, POT_5_PIN, POT_5_CC); //pin of mux
+Pot pot6(&mux_analog, POT_6_PIN, POT_6_CC); //pin of mux
+Pot pot7(&mux_analog, POT_7_PIN, POT_7_CC); //pin of mux
+Pot pot8(&mux_analog, POT_8_PIN, POT_8_CC); //pin of mux
+Pot pot9(&mux_analog, POT_9_PIN, POT_9_CC); //pin of mux
+Pot pot10(&mux_analog, POT_10_PIN, POT_10_CC); //pin of mux
+Pot pot11(&mux_analog, POT_11_PIN, POT_11_CC); //pin of mux
+Pot pot12(&mux_analog, POT_12_PIN, POT_12_CC); //pin of mux
+Pot pot13(&mux_analog, POT_13_PIN, POT_13_CC); //pin of mux
+Pot pot14(&mux_analog, POT_14_PIN, POT_14_CC); //pin of mux
+Pot pot15(&mux_analog, POT_15_PIN, POT_15_CC); //pin of mux
+Pot pot16(&mux_analog, POT_16_PIN, POT_16_CC); //pin of mux
+Pot pot17(&mux_analog, POT_17_PIN, POT_17_CC, false); //pin of arduino
+Pot pot18(&mux_analog, POT_18_PIN, POT_18_CC, false); //pin of arduino
+
+const byte N_POTS = 18;
+//
+Pot* pots[N_POTS] = {
+  &pot1,&pot2,&pot3,&pot4,&pot5,&pot6,&pot7,&pot8,&pot9,&pot10,&pot11,&pot12,&pot13,&pot14,&pot15,&pot16,&pot17,&pot18
+};
+
+//Switches
+
+//LFO switch DCO 1
+#define SWITCH_1_PIN 8
+#define SWITCH_1_BITPOS1 7
+#define SWITCH_1_GROUPCC 1
+//Env switch DCO 1
+#define SWITCH_2_PIN 9
+#define SWITCH_2_BITPOS1 6
+#define SWITCH_2_GROUPCC 1
+//Env polarity, DCOs
+#define SWITCH_3_PIN 10
+#define SWITCH_3_BITPOS1 2
+#define SWITCH_3_GROUPCC 2
+//LFO switch DCO 2
+#define SWITCH_4_PIN 11
+#define SWITCH_4_BITPOS1 5
+#define SWITCH_4_GROUPCC 1
+//Env switch DCO 2
+#define SWITCH_5_PIN 12
+#define SWITCH_5_BITPOS1 4
+#define SWITCH_5_GROUPCC 1
+//Env polarity, VCF
+#define SWITCH_6_PIN 13
+#define SWITCH_6_BITPOS1 2
+#define SWITCH_6_GROUPCC 1
+//Chorus
+#define SWITCH_7_PIN 14
+#define SWITCH_7_BITPOS1 3
+#define SWITCH_7_GROUPCC 2
+//VCA mode
+#define SWITCH_8_PIN 15
+#define SWITCH_8_BITPOS1 3
+#define SWITCH_8_GROUPCC 1
+
+//DCO 1 range
+#define SWITCH_9_PIN 1
+#define SWITCH_9_PIN2 2 //D2
+#define SWITCH_9_BITPOS1 0
+#define SWITCH_9_BITPOS2 1
+#define SWITCH_9_GROUPCC 0
+//DCO 1 waveform
+#define SWITCH_10_PIN 8 //D8
+#define SWITCH_10_PIN2 0
+#define SWITCH_10_BITPOS1 2
+#define SWITCH_10_BITPOS2 3
+#define SWITCH_10_GROUPCC 0
+//DCO 2 range
+#define SWITCH_11_PIN 7
+#define SWITCH_11_PIN2 6
+#define SWITCH_11_BITPOS1 4
+#define SWITCH_11_BITPOS2 5
+#define SWITCH_11_GROUPCC 0
+//DCO 2 waveform
+#define SWITCH_12_PIN 5
+#define SWITCH_12_PIN2 4
+#define SWITCH_12_BITPOS1 6
+#define SWITCH_12_BITPOS2 7
+#define SWITCH_12_GROUPCC 0
+//Crossmod
+#define SWITCH_13_PIN 3
+#define SWITCH_13_PIN2 2
+#define SWITCH_13_BITPOS1 0
+#define SWITCH_13_BITPOS2 1
+#define SWITCH_13_GROUPCC 1
+//LFO waveform
+#define SWITCH_14_PIN 9 //D9
+#define SWITCH_14_PIN2 10 //D10
+#define SWITCH_14_BITPOS1 0
+#define SWITCH_14_BITPOS2 1
+#define SWITCH_14_GROUPCC 2
+
+Group group1(0, 4);
+Group group2(1, 7);
+Group group3(2, 3);
+
+DualPole dualPole1(&mux_digital, SWITCH_9_PIN, SWITCH_9_PIN2, SWITCH_9_BITPOS1, SWITCH_9_BITPOS2, SWITCH_9_GROUPCC, true, false);
+DualPole dualPole2(&mux_digital, SWITCH_10_PIN, SWITCH_10_PIN2, SWITCH_10_BITPOS1, SWITCH_10_BITPOS2, SWITCH_10_GROUPCC, false, true);
+DualPole dualPole3(&mux_digital, SWITCH_11_PIN, SWITCH_11_PIN2, SWITCH_11_BITPOS1, SWITCH_11_BITPOS2, SWITCH_11_GROUPCC, true, true);
+DualPole dualPole4(&mux_digital, SWITCH_12_PIN, SWITCH_12_PIN2, SWITCH_12_BITPOS1, SWITCH_12_BITPOS2, SWITCH_12_GROUPCC, true, true);
+
+DualPole dualPole5(&mux_digital, SWITCH_13_PIN, SWITCH_13_PIN2, SWITCH_13_BITPOS1, SWITCH_13_BITPOS2, SWITCH_13_GROUPCC, true, true);
+SinglePole singlePole1(&mux_digital, SWITCH_6_PIN, SWITCH_6_BITPOS1, SWITCH_6_GROUPCC, true);
+SinglePole singlePole2(&mux_digital, SWITCH_8_PIN, SWITCH_8_BITPOS1, SWITCH_8_GROUPCC, true);
+SinglePole singlePole3(&mux_digital, SWITCH_5_PIN, SWITCH_5_BITPOS1, SWITCH_5_GROUPCC, true);
+SinglePole singlePole4(&mux_digital, SWITCH_4_PIN, SWITCH_4_BITPOS1, SWITCH_4_GROUPCC, true);
+SinglePole singlePole5(&mux_digital, SWITCH_2_PIN, SWITCH_2_BITPOS1, SWITCH_2_GROUPCC, true);
+SinglePole singlePole6(&mux_digital, SWITCH_1_PIN, SWITCH_1_BITPOS1, SWITCH_1_GROUPCC, true);
+
+DualPole dualPole6(SWITCH_14_PIN, SWITCH_14_PIN2, SWITCH_14_BITPOS1, SWITCH_14_BITPOS2, SWITCH_14_GROUPCC);
+SinglePole singlePole7(&mux_digital, SWITCH_7_PIN, SWITCH_7_BITPOS1, SWITCH_7_GROUPCC, true);
+SinglePole singlePole8(&mux_digital, SWITCH_3_PIN, SWITCH_3_BITPOS1, SWITCH_3_GROUPCC, true);
+
+//Settings
+#define delayBetweenWrites 20
+
+
+/* ================================================================================================ */
 
 void setup ()
 {
-  pinMode(8, OUTPUT);
+  Serial.begin (BAUD, SERIAL_8N1, true); // 9 bit mode
+  
+  //inits
+  mux_analog.init();
+  mux_digital.init();
 
-  //buttons
-  for (int i = 0; i < N_BUTTONS; i++) {
-    pinMode(buttonPin[i], INPUT);
+  writeBtn.init();
+  manualBtn.init();
+  
+  group1.addSwitch(&dualPole1);
+  group1.addSwitch(&dualPole2);
+  group1.addSwitch(&dualPole3);
+  group1.addSwitch(&dualPole4);
+
+  group2.addSwitch(&dualPole5);
+  group2.addSwitch(&singlePole1);
+  group2.addSwitch(&singlePole2);
+  group2.addSwitch(&singlePole3);
+  group2.addSwitch(&singlePole4);
+  group2.addSwitch(&singlePole5);
+  group2.addSwitch(&singlePole6);
+
+  group3.addSwitch(&dualPole6);
+  group3.addSwitch(&singlePole7);
+  group3.addSwitch(&singlePole8);
+
+  group1.init();
+  group2.init();
+  group3.init();
+
+  for (byte i = 0; i < N_POTS; i++) {
+    pots[i]->init();
   }
-
-
-  //ResponsiveAnalogRead (for pots smooting)
-  for (int i = 0; i < N_POTS; i++) {
-    responsivePot[i] = ResponsiveAnalogRead(0, true, snapMultiplier);
-    responsivePot[i].setAnalogResolution(1023);
-  }
-
-  //Set values of pots so we don't enter the loop prematurely on startup
-  for (int i = 0; i < N_POTS; i++) {
-    potRead(i);
-    potPState[i] = potState[i];
-  }
-
-  Serial.begin (31250, SERIAL_8N1, true); // 9 bit mode
-
+  
   //Startup ping
   delay(2500);
   send(128, 1);
@@ -85,99 +267,77 @@ void setup ()
 
 void loop ()
 {
+  for (byte i = 0; i < N_POTS; i++) {
+    if (pots[i]->hasChanged()) {
+      send(pots[i]->getCC(), 1);
+      send(pots[i]->getValue(), 0);
+    }
+  }
+  
+  if (writeBtn.isPressed()) {
+    send(writeBtn.getCC(), 1);
+    send(writeBtn.getValue(), 0);
+  }
 
-  momentaryButtons();
+  if (manualBtn.isPressed()) {
+    send(manualBtn.getCC(), 1);
+    send(manualBtn.getValue(), 0);
+    send(0, 0);
+    sendAll();
+  }
+  
+  if (group1.hasChanged()) {
+    send(group1.getCC(), 1);
+    send(group1.getMask(), 0);
+    send(group1.getValue(), 0);
 
-  potentiometers();
+  }
+  if (group2.hasChanged()) {
+    send(group2.getCC(), 1);
+    send(group2.getMask(), 0);
+    send(group2.getValue(), 0);
+  }
+  if (group3.hasChanged()) {
+    send(group3.getCC(), 1);
+    send(group3.getMask(), 0);
+    send(group3.getValue(), 0);
+  }
 }  // end of loop
 
 
 /* =================================================== */
 
 void sendAll() {
+
   //Pots
-  for (int i = 0; i < N_POTS; i++) {
-    potRead(i);
-    potDataState[i] = map(potState[i], 0, 1023, 0, 255);
-    send(potCC[i], 1);
-    send(potDataState[i], 0);
+  for (byte i = 0; i < N_POTS; i++) {
+    send(pots[i]->getCC(), 1);
+    send(pots[i]->getValue(), 0);
   }
 
   //Switches
+  send(group1.getCC(), 1);
+  send(group1.getMask(), 0);
+  send(group1.getValue(), 0);
 
+  send(group2.getCC(), 1);
+  send(group2.getMask(), 0);
+  send(group2.getValue(), 0);
 
+  send(group3.getCC(), 1);
+  send(group3.getMask(), 0);
+  send(group3.getValue(), 0);
 }
 
-void send(int value, int ind) {
+void send(byte value, int ind) {
   delay(delayBetweenWrites);
   Serial.write9bit(to9Bits(value, ind));
-}
-
-void momentaryButtons() {
-  for (int i = 0; i < N_BUTTONS; i++) {
-    buttonState[i] = digitalRead(buttonPin[i]);
-    debounceTimer[i] = millis() - lastDebounceTime[i];
-
-    if (buttonState[i] != buttonPState[i]) {
-
-      lastDebounceTime[i] = millis();
-
-      if (debounceTimer[i] > debounceDelay) {
-        if (buttonState[i] == LOW) {
-
-          send(buttonCC[i], 1);
-          send(buttonDataState[i], 0);
-
-          if (buttonCC[i] == 130) {
-            send(0, 0);
-
-            sendAll();
-          }
-        }
-        buttonPState[i] = buttonState[i];
-      }
-
-    }
-
-  }
-}
-void potRead(int i) {
-  potReading[i] = analogRead(potPin[i]);
-  responsivePot[i].update(potReading[i]);
-  potState[i] = responsivePot[i].getValue();
-}
-
-void potentiometers() {
-  for (int i = 0; i < N_POTS; i++) {
-    potRead(i);
-    potDataState[i] = map(potState[i], 0, 1023, 0, 255);
-
-    int potVar = abs(potState[i] - potPState[i]);
-
-    if (potVar > potThreshold) {
-      lastPotTime[i] = millis(); //reset
-    }
-
-    potTimer[i] = millis() - lastPotTime[i];
-
-    if (potTimer[i] < POT_TIMEOUT && millis() >= POT_TIMEOUT) {
-      if (potDataState[i] != potDataPState[i]) {
-        send(potCC[i], 1);
-        send(potDataState[i], 0);
-
-
-        potDataPState[i] = potDataState[i];
-      }
-      potPState[i] = potState[i];
-
-    }
-  }
 }
 
 int to9Bits(int address, int value)
 {
   if (value == 1) {
-    address += 256;
+    address += 0b100000000; //256;
   }
   return address;
 }
@@ -223,4 +383,3 @@ int to9Bits(int address, int value)
 //Manual                  130           all address/value bytes (?)
 //Write                   129           0
 //Ping (sent on startup)  128           0
-
