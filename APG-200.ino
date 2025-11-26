@@ -118,27 +118,6 @@ const byte N_POTS = 18;
 Pot* pots[N_POTS] = {
   &pot1,&pot2,&pot3,&pot4,&pot5,&pot6,&pot7,&pot8,&pot9,&pot10,&pot11,&pot12,&pot13,&pot14,&pot15,&pot16,&pot17,&pot18
 };
-//Pot* pots[N_POTS] = {
-//  new Pot(&mux_analog, POT_1_PIN, POT_1_CC), //pin of mux
-//  new Pot(&mux_analog, POT_2_PIN, POT_2_CC), //pin of mux
-//  new Pot(&mux_analog, POT_3_PIN, POT_3_CC), //pin of mux
-//  new Pot(&mux_analog, POT_4_PIN, POT_4_CC), //pin of mux
-//  new Pot(&mux_analog, POT_5_PIN, POT_5_CC), //pin of mux
-//  new Pot(&mux_analog, POT_6_PIN, POT_6_CC), //pin of mux
-//  new Pot(&mux_analog, POT_7_PIN, POT_7_CC), //pin of mux
-//  new Pot(&mux_analog, POT_8_PIN, POT_8_CC), //pin of mux
-//  new Pot(&mux_analog, POT_9_PIN, POT_9_CC), //pin of mux
-//  new Pot(&mux_analog, POT_10_PIN, POT_10_CC), //pin of mux
-//  new Pot(&mux_analog, POT_11_PIN, POT_11_CC), //pin of mux
-//  new Pot(&mux_analog, POT_12_PIN, POT_12_CC), //pin of mux
-//  new Pot(&mux_analog, POT_13_PIN, POT_13_CC), //pin of mux
-//  new Pot(&mux_analog, POT_14_PIN, POT_14_CC), //pin of mux
-//  new Pot(&mux_analog, POT_15_PIN, POT_15_CC), //pin of mux
-//  new Pot(&mux_analog, POT_16_PIN, POT_16_CC), //pin of mux
-//  new Pot(&mux_analog, POT_17_PIN, POT_17_CC, false), //pin of arduino
-//  new Pot(&mux_analog, POT_18_PIN, POT_18_CC, false), //pin of arduino
-//};
-
 
 //Switches
 
@@ -212,8 +191,6 @@ Pot* pots[N_POTS] = {
 #define SWITCH_14_BITPOS2 1
 #define SWITCH_14_GROUPCC 2
 
-//const byte N_GROUPS = 2;
-
 Group group1(0, 4);
 Group group2(1, 7);
 Group group3(2, 3);
@@ -244,7 +221,7 @@ SinglePole singlePole8(&mux_digital, SWITCH_3_PIN, SWITCH_3_BITPOS1, SWITCH_3_GR
 void setup ()
 {
   Serial.begin (BAUD, SERIAL_8N1, true); // 9 bit mode
-  //  Serial.println("test");
+  
   //inits
   mux_analog.init();
   mux_digital.init();
@@ -273,31 +250,10 @@ void setup ()
   group2.init();
   group3.init();
 
-//  pot1.init();
-//  pot2.init();
-//  pot3.init();
-//  pot4.init();
-//  pot5.init();
-//  pot6.init();
-//  pot7.init();
-//  pot8.init();
-//  pot9.init();
-//  pot10.init();
-//  pot11.init();
-//  pot12.init();
-//  pot13.init();
-//  pot14.init();
-//  pot15.init();
-//  pot16.init();
-//  pot17.init();
-//  pot18.init();
-
   for (byte i = 0; i < N_POTS; i++) {
     pots[i]->init();
   }
   
-//  Serial.println("ok");
-
   //Startup ping
   delay(2500);
   send(128, 1);
@@ -315,7 +271,6 @@ void loop ()
     if (pots[i]->hasChanged()) {
       send(pots[i]->getCC(), 1);
       send(pots[i]->getValue(), 0);
-//      Serial.println("ho");
     }
   }
   
@@ -330,116 +285,22 @@ void loop ()
     send(0, 0);
     sendAll();
   }
-
-//  if (pot1.hasChanged()) {
-//    send(pot1.getCC(), 1);
-//    send(pot1.getValue(), 0);
-////    Serial.println("ho");
-//  }
-//  if (pot2.hasChanged()) {
-//    send(pot2.getCC(), 1);
-//    send(pot2.getValue(), 0);
-////    Serial.println("ho");
-//  }
-//  if (pot3.hasChanged()) {
-//    send(pot3.getCC(), 1);
-//    send(pot3.getValue(), 0);
-////    Serial.println("ho");
-//  }
-//  if (pot4.hasChanged()) {
-//    send(pot4.getCC(), 1);
-//    send(pot4.getValue(), 0);
-////    Serial.println("ho");
-//  }
-//  if (pot5.hasChanged()) {
-//    send(pot5.getCC(), 1);
-//    send(pot5.getValue(), 0);
-////    Serial.println("ho");
-//  }
-//  if (pot6.hasChanged()) {
-//    send(pot6.getCC(), 1);
-//    send(pot6.getValue(), 0);
-////    Serial.println("ho");
-//  }
-//  if (pot7.hasChanged()) {
-//    send(pot7.getCC(), 1);
-//    send(pot7.getValue(), 0);
-////    Serial.println("ho");
-//  }
-//  if (pot8.hasChanged()) {
-//    send(pot8.getCC(), 1);
-//    send(pot8.getValue(), 0);
-////    Serial.println("ho");
-//  }
-//  if (pot9.hasChanged()) {
-//    send(pot9.getCC(), 1);
-//    send(pot9.getValue(), 0);
-////    Serial.println("ho");
-//  }
-//  if (pot10.hasChanged()) {
-//    send(pot10.getCC(), 1);
-//    send(pot10.getValue(), 0);
-////    Serial.println("ho");
-//  }
-//  if (pot11.hasChanged()) {
-//    send(pot11.getCC(), 1);
-//    send(pot11.getValue(), 0);
-////    Serial.println("ho");
-//  }
-//  if (pot12.hasChanged()) {
-//    send(pot12.getCC(), 1);
-//    send(pot12.getValue(), 0);
-////    Serial.println("ho");
-//  }
-//  if (pot13.hasChanged()) {
-//    send(pot13.getCC(), 1);
-//    send(pot13.getValue(), 0);
-////      Serial.println("ho");
-//  }
-//  if (pot14.hasChanged()) {
-//    send(pot14.getCC(), 1);
-//    send(pot14.getValue(), 0);
-////    Serial.println("ho");
-//  }
-//  if (pot15.hasChanged()) {
-//    send(pot15.getCC(), 1);
-//    send(pot15.getValue(), 0);
-////    Serial.println("ho");
-//  }
-//  if (pot16.hasChanged()) {
-//    send(pot16.getCC(), 1);
-//    send(pot16.getValue(), 0);
-////    Serial.println("ho");
-//  }
-//  if (pot17.hasChanged()) {
-//    send(pot17.getCC(), 1);
-//    send(pot17.getValue(), 0);
-////    Serial.println("ho");
-//  }
-//  if (pot18.hasChanged()) {
-//    send(pot18.getCC(), 1);
-//    send(pot18.getValue(), 0);
-////    Serial.println("ho");
-//  }
   
   if (group1.hasChanged()) {
     send(group1.getCC(), 1);
     send(group1.getMask(), 0);
     send(group1.getValue(), 0);
-//        Serial.println("fuck0");
 
   }
   if (group2.hasChanged()) {
     send(group2.getCC(), 1);
     send(group2.getMask(), 0);
     send(group2.getValue(), 0);
-//    Serial.println("fuck1");
   }
   if (group3.hasChanged()) {
     send(group3.getCC(), 1);
     send(group3.getMask(), 0);
     send(group3.getValue(), 0);
-//    Serial.println("fuck2");
   }
 }  // end of loop
 
@@ -454,43 +315,6 @@ void sendAll() {
     send(pots[i]->getValue(), 0);
   }
 
-//  send(pot1.getCC(), 1);
-//  send(pot1.getValue(), 0);
-//  send(pot2.getCC(), 1);
-//  send(pot2.getValue(), 0);
-//  send(pot3.getCC(), 1);
-//  send(pot3.getValue(), 0);
-//  send(pot4.getCC(), 1);
-//  send(pot4.getValue(), 0);
-//  send(pot5.getCC(), 1);
-//  send(pot5.getValue(), 0);
-//  send(pot6.getCC(), 1);
-//  send(pot6.getValue(), 0);
-//  send(pot7.getCC(), 1);
-//  send(pot7.getValue(), 0);
-//  send(pot8.getCC(), 1);
-//  send(pot8.getValue(), 0);
-//  send(pot9.getCC(), 1);
-//  send(pot9.getValue(), 0);
-//  send(pot10.getCC(), 1);
-//  send(pot10.getValue(), 0);
-//  send(pot11.getCC(), 1);
-//  send(pot11.getValue(), 0);
-//  send(pot12.getCC(), 1);
-//  send(pot12.getValue(), 0);
-//  send(pot13.getCC(), 1);
-//  send(pot13.getValue(), 0);
-//  send(pot14.getCC(), 1);
-//  send(pot14.getValue(), 0);
-//  send(pot15.getCC(), 1);
-//  send(pot15.getValue(), 0);
-//  send(pot16.getCC(), 1);
-//  send(pot16.getValue(), 0);
-//  send(pot17.getCC(), 1);
-//  send(pot17.getValue(), 0);
-//  send(pot18.getCC(), 1);
-//  send(pot18.getValue(), 0);
-
   //Switches
   send(group1.getCC(), 1);
   send(group1.getMask(), 0);
@@ -503,7 +327,6 @@ void sendAll() {
   send(group3.getCC(), 1);
   send(group3.getMask(), 0);
   send(group3.getValue(), 0);
-
 }
 
 void send(byte value, int ind) {

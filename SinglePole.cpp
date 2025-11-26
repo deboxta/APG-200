@@ -49,14 +49,10 @@ void SinglePole::update() {
       // only toggle the LED if the new button state is LOW (button pressed, assuming INPUT_PULLUP)
       if (buttonState == LOW) {
         value &= ~(1 << bitPos);
-//        Serial.println(pin);
-//        Serial.println("low");
       }
       else if (buttonState == HIGH)
       {
         value |= (1 << bitPos);
-//        Serial.println(pin);
-//        Serial.println("high");           
       }
     }
   }
