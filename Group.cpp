@@ -17,14 +17,14 @@ void Group::init() {
 void Group::update() {
   isChanged = false;
 
-  byte newValue = 0b00000000;
+  byte lastValue = value;
+  value = 0b00000000; //reset
+  
   for (byte i = 0; i < nbInGroup; i++) {
+    switches[i]->init();
     switches[i]->update();
-    lastValue = value;
-
-    newValue = newValue ^ switches[i]->getValue();
+    value = value ^ switches[i]->getValue();
   }
-  value = newValue;
 
   if (lastValue != value) {
     bitMask = lastValue ^ value;

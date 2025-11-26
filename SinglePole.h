@@ -9,7 +9,8 @@ class SinglePole : public Switch {
   public:
     SinglePole(Mux* mux, byte pin, byte bitPos, byte CC, bool isMuxPinned);
     SinglePole(byte pin, byte bitPos, byte CC);
-    
+
+    void init();
     void update() override;
     byte getPin() override;
 };

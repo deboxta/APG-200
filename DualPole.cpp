@@ -17,6 +17,28 @@ DualPole::DualPole(byte pin, byte pin2, byte bitPos, byte bitPos2, byte CC): Swi
   pinMode(pin2, INPUT_PULLUP);
 }
 
+void DualPole::init() {
+  Setup(pin, bitPos, isMuxPinned, buttonState);
+  Setup(pin2, bitPos2, isMuxPinned2, buttonState2);
+}
+
+void DualPole::Setup(byte &pinU, byte &bitPosU, bool &isMux, byte &state) {
+  if (isMux) {
+    mux->channel(pinU);
+  }
+  
+  // read the state of the switch into a local variable:
+  state = digitalRead(getPin(pinU));
+  
+  if (state == LOW) {
+    value &= ~(1 << bitPosU);
+  }
+  else if (state == HIGH)
+  {
+    value |= (1 << bitPosU);          
+  }
+}
+
 void DualPole::update() {
   pinUpdate(pin, bitPos, isMuxPinned, lastButtonState, lastDebounceTime, buttonState);
   pinUpdate(pin2, bitPos2, isMuxPinned2, lastButtonState2, lastDebounceTime2, buttonState2);

@@ -22,7 +22,7 @@ class Pot {
     const byte threshold = 25;
     unsigned long lastTime = 0;
     unsigned long timer = 0;
-    const int TIMEOUT = 200; //in milliseconds
+    const byte TIMEOUT = 200; //in milliseconds
     
     //ResponsiveAnalogRead.h
     const float snapMultiplier = 0.01; // (0.0 - 1.0) - Increase for faster, but less smooth reading

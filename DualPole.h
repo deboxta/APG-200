@@ -18,6 +18,8 @@ class DualPole : public Switch {
     DualPole(Mux* mux, byte pin, byte pin2, byte bitPos, byte bitPos2, byte CC, bool isMuxPinned, bool isMuxPinned2);
     DualPole(byte pin, byte pin2, byte bitPos, byte bitPos2, byte CC);
 
+    void init();
+    void Setup(byte &pinU, byte &bitPosU, bool &mux, byte &state);
     void update() override;
     void pinUpdate(byte &pinU, byte &pinPosU, bool &isMux, byte &lastState, unsigned long &lastDebounceT, byte &state);
     byte getPin(byte id);

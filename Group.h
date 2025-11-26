@@ -8,7 +8,6 @@ class Group {
     byte CC;
     byte bitMask = 0b00000000;;
     byte value = 0b00000000;;
-    byte lastValue = 0b00000000;;
     byte index = 0;
     Switch* switches[7];
     bool isChanged = false;

@@ -6,6 +6,23 @@ SinglePole::SinglePole(Mux* mux, byte pin, byte bitPos, byte CC, bool isMuxPinne
 SinglePole::SinglePole(byte pin, byte bitPos, byte CC): Switch(pin, bitPos, CC) {
 }
 
+void SinglePole::init() {
+  if (isMuxPinned) {
+    mux->channel(pin);
+  }
+  
+  // read the state of the switch into a local variable:
+  buttonState = digitalRead(getPin());
+
+  if (buttonState == LOW) {
+    value &= ~(1 << bitPos);
+  }
+  else if (buttonState == HIGH)
+  {
+    value |= (1 << bitPos);          
+  }
+}
+
 void SinglePole::update() {
   if (isMuxPinned) {
     mux->channel(pin);

@@ -28,6 +28,7 @@ class Switch {
     Switch(Mux* mux, byte pin, byte bitPos, byte CC, bool isMuxPinned);
     Switch(byte pin, byte bitPos, byte CC);
 
+    virtual void init() = 0;
     virtual void update() = 0;
     byte getValue();
     virtual byte getPin();
