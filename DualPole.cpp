@@ -30,10 +30,10 @@ void DualPole::Setup(byte &pinU, byte &bitPosU, bool &isMux, byte &state) {
   // read the state of the switch into a local variable:
   state = digitalRead(getPin(pinU));
   
-  if (state == LOW) {
+  if (state == HIGH) {
     value &= ~(1 << bitPosU);
   }
-  else if (state == HIGH)
+  else if (state == LOW)
   {
     value |= (1 << bitPosU);          
   }
