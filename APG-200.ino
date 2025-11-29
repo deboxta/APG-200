@@ -191,9 +191,9 @@ Pot* pots[N_POTS] = {
 #define SWITCH_14_BITPOS2 1
 #define SWITCH_14_GROUPCC 2
 
-Group group1(0, 4);
-Group group2(1, 7);
-Group group3(2, 3);
+Group group1(0);
+Group group2(1);
+Group group3(2);
 
 DualPole dualPole1(&mux_digital, SWITCH_9_PIN, SWITCH_9_PIN2, SWITCH_9_BITPOS1, SWITCH_9_BITPOS2, SWITCH_9_GROUPCC, true, false);
 DualPole dualPole2(&mux_digital, SWITCH_10_PIN, SWITCH_10_PIN2, SWITCH_10_BITPOS1, SWITCH_10_BITPOS2, SWITCH_10_GROUPCC, false, true);
@@ -213,7 +213,7 @@ SinglePole singlePole7(&mux_digital, SWITCH_7_PIN, SWITCH_7_BITPOS1, SWITCH_7_GR
 SinglePole singlePole8(&mux_digital, SWITCH_3_PIN, SWITCH_3_BITPOS1, SWITCH_3_GROUPCC, true);
 
 //Settings
-#define delayBetweenWrites 20
+#define delayBetweenWrites 17
 
 
 /* ================================================================================================ */
@@ -281,8 +281,8 @@ void loop ()
 
   if (manualBtn.isPressed()) {
     send(manualBtn.getCC(), 1);
-    send(manualBtn.getValue(), 0);
-    send(0, 0);
+//    send(manualBtn.getValue(), 0);
+//    send(0, 0);
     sendAll();
   }
   
@@ -308,6 +308,7 @@ void loop ()
 /* =================================================== */
 
 void sendAll() {
+//  Serial.println("test");
 
   //Pots
   for (byte i = 0; i < N_POTS; i++) {
@@ -317,21 +318,29 @@ void sendAll() {
 
   //Switches
   send(group1.getCC(), 1);
-  send(group1.getMask(), 0);
+  send(0b11111111, 0);
   send(group1.getValue(), 0);
+//  Serial.println(group1.getMask(),BIN);
+//  Serial.println(group1.getValue(),BIN);
 
   send(group2.getCC(), 1);
-  send(group2.getMask(), 0);
+  send(0b11111111, 0);
   send(group2.getValue(), 0);
+//  Serial.println(group2.getMask(),BIN);
+//  Serial.println(group2.getValue(),BIN);
 
   send(group3.getCC(), 1);
-  send(group3.getMask(), 0);
+  send(0b11111111, 0);
   send(group3.getValue(), 0);
+//  Serial.println(group3.getMask(),BIN);
+//  Serial.println(group3.getValue(),BIN);
+
 }
 
 void send(byte value, int ind) {
   delay(delayBetweenWrites);
   Serial.write9bit(to9Bits(value, ind));
+
 }
 
 int to9Bits(int address, int value)

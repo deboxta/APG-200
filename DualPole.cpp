@@ -29,7 +29,8 @@ void DualPole::Setup(byte &pinU, byte &bitPosU, bool &isMux, byte &state) {
   
   // read the state of the switch into a local variable:
   state = digitalRead(getPin(pinU));
-  
+  state = digitalRead(getPin(pinU));
+
   if (state == HIGH) {
     value &= ~(1 << bitPosU);
   }
@@ -68,10 +69,10 @@ void DualPole::pinUpdate(byte &pinU, byte &bitPosU, bool &isMux, byte &lastState
       state = reading;
 
       // only toggle the LED if the new button state is LOW (button pressed, assuming INPUT_PULLUP)
-      if (state == LOW) {
+      if (state == HIGH) {
         value &= ~(1 << bitPosU);
       }
-      else if (state == HIGH)
+      else if (state == LOW)
       {
         value |= (1 << bitPosU);          
       }
