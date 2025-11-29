@@ -156,12 +156,12 @@ Pot* pots[N_POTS] = {
 
 //DCO 1 range
 #define SWITCH_9_PIN 1
-#define SWITCH_9_PIN2 2 //D2
+#define SWITCH_9_PIN2 8 //D8
 #define SWITCH_9_BITPOS1 0
 #define SWITCH_9_BITPOS2 1
 #define SWITCH_9_GROUPCC 0
 //DCO 1 waveform
-#define SWITCH_10_PIN 8 //D8
+#define SWITCH_10_PIN 9 //D9
 #define SWITCH_10_PIN2 0
 #define SWITCH_10_BITPOS1 2
 #define SWITCH_10_BITPOS2 3
@@ -175,8 +175,8 @@ Pot* pots[N_POTS] = {
 //DCO 2 waveform
 #define SWITCH_12_PIN 5
 #define SWITCH_12_PIN2 4
-#define SWITCH_12_BITPOS1 6
-#define SWITCH_12_BITPOS2 7
+#define SWITCH_12_BITPOS1 7
+#define SWITCH_12_BITPOS2 6
 #define SWITCH_12_GROUPCC 0
 //Crossmod
 #define SWITCH_13_PIN 3
@@ -185,7 +185,7 @@ Pot* pots[N_POTS] = {
 #define SWITCH_13_BITPOS2 1
 #define SWITCH_13_GROUPCC 1
 //LFO waveform
-#define SWITCH_14_PIN 9 //D9
+#define SWITCH_14_PIN 2 //D2
 #define SWITCH_14_PIN2 10 //D10
 #define SWITCH_14_BITPOS1 0
 #define SWITCH_14_BITPOS2 1
