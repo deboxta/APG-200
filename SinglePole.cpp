@@ -13,6 +13,7 @@ void SinglePole::init() {
   
   // read the state of the switch into a local variable:
   buttonState = digitalRead(getPin());
+  buttonState = digitalRead(getPin());
 
   if (buttonState == LOW) {
     value &= ~(1 << bitPos);

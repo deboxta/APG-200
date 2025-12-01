@@ -11,9 +11,8 @@ class Group {
     byte index = 0;
     Switch* switches[7];
     bool isChanged = false;
-    byte nbInGroup= 0;
   public:
-    Group(byte CC, byte nbInGroup);
+    Group(byte CC);
     void init();
     void update();
     byte getCC();
