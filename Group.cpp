@@ -1,8 +1,7 @@
 #include "Group.h"
 
-Group::Group(byte CC, byte nbInGroup) {
+Group::Group(byte CC) {
   this->CC = CC;
-  this->nbInGroup = nbInGroup;
 }
 
 void Group::addSwitch(Switch* sw) {
@@ -11,7 +10,15 @@ void Group::addSwitch(Switch* sw) {
 }
 
 void Group::init() {
-  update();
+  for (byte i = 0; i < index; i++) {
+    switches[i]->init();
+    value = value ^ switches[i]->getValue();
+  }
+  //every bits are changed since first pass
+  bitMask = 0b11111111;
+  
+//  Serial.println(bitMask, BIN);
+//  Serial.println(value, BIN);
 }
 
 void Group::update() {
@@ -20,8 +27,7 @@ void Group::update() {
   byte lastValue = value;
   value = 0b00000000; //reset
   
-  for (byte i = 0; i < nbInGroup; i++) {
-    switches[i]->init();
+  for (byte i = 0; i < index; i++) {
     switches[i]->update();
     value = value ^ switches[i]->getValue();
   }
@@ -29,6 +35,11 @@ void Group::update() {
   if (lastValue != value) {
     bitMask = lastValue ^ value;
     isChanged = true;
+//    Serial.println("update");
+//    Serial.println(CC);
+//    Serial.println(bitMask, BIN);
+//    Serial.println(value, BIN);
+
   }
 }
 
