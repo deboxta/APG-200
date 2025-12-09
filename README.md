@@ -15,6 +15,6 @@ https://www.youtube.com/watch?v=hcm5H6f8MI8
 Made on https://www.circuit-diagram.org/editor/
 
 # Complete circuit using arduino nano and multiplexers
-![alt text](https://github.com/deboxta/APG-200/blob/master/Diagram/Arduino c.png)
+![alt text](https://github.com/deboxta/APG-200/blob/master/Diagram/Arduino%20c.png)
 
 Made on https://www.circuit-diagram.org/editor/
